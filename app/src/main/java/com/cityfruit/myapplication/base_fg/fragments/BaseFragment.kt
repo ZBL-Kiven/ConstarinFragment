@@ -18,10 +18,8 @@ abstract class BaseFragment : Fragment() {
     var rootView: View? = null
     var removing = false
 
-    protected abstract val layoutId: Int
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        rootView = inflater.inflate(layoutId, container, false)
+        rootView = getRootView(inflater, container, false)
         val parent = rootView?.parent as ViewGroup?
         if (parent != null && parent.childCount > 0) {
             parent.removeView(rootView)
@@ -29,11 +27,13 @@ abstract class BaseFragment : Fragment() {
         return rootView
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initView()
         initData()
     }
+
+    protected abstract fun getRootView(inflater: LayoutInflater, container: ViewGroup?, attachToRoot: Boolean): View
 
     protected abstract fun initView()
 

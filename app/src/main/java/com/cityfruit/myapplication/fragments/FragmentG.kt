@@ -3,6 +3,9 @@ package com.cityfruit.myapplication.fragments
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.cityfruit.myapplication.R
 import com.cityfruit.myapplication.base_fg.BackMode
@@ -23,9 +26,9 @@ class FragmentG : ConstrainFragment() {
     @Container
     var frgContainer: FrameLayout? = null
 
-    override val layoutId: Int
-        get() = R.layout.fragment_a
-
+    override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
+        return inflater.inflate(R.layout.fragment_a, container, false)
+    }
 
     override fun onPostValue(bundle: Bundle?) {
         printBundle(bundle, false)

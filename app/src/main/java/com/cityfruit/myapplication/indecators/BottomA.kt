@@ -1,30 +1,39 @@
 package com.cityfruit.myapplication.indecators
 
-import android.widget.FrameLayout
+import android.graphics.Color
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.ViewGroup
 import com.cityfruit.myapplication.R
 import com.cityfruit.myapplication.base_fg.annotations.Container
 import com.cityfruit.myapplication.base_fg.fragments.BaseLinkageFragment
+import com.cityfruit.myapplication.base_fg.managers.BaseFragmentManager
 import com.cityfruit.myapplication.base_fg.startFragmentByNewTask
-import com.cityfruit.myapplication.fragments.FragmentA
-import com.cityfruit.myapplication.getBundle
-import kotlinx.android.synthetic.main.bottom.*
+import com.cityfruit.myapplication.fragments.FragmentD
+import kotlinx.android.synthetic.main.fragment_b.*
 
 class BottomA : BaseLinkageFragment() {
 
-    override val layoutId: Int
-        get() = R.layout.bottom
-
     @Container
-    var container: FrameLayout? = null
+    var contrainer: ViewGroup? = null
+
+    override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
+        return inflater.inflate(R.layout.fragment_b, container, false)
+    }
 
     override fun initView() {
-        container = bottom_fl
+        contrainer = fragment_container
+        btn01.setOnClickListener {
+            contrainer?.visibility = VISIBLE
+            startFragmentByNewTask(FragmentD::class.java, null, { contrainer?.removeAllViews();contrainer?.visibility = GONE })
+        }
     }
 
     override fun initData() {
-        startFragmentByNewTask(FragmentA::class.java, getBundle("bottomA 启动了 FrgA"), {
-            container?.removeAllViews()
-        })
-    }
 
+        //        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, BottomB(), BottomC(), BottomD()) {}
+
+    }
 }

@@ -8,11 +8,11 @@ import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentTransaction
 import android.view.View
 import android.view.ViewGroup
-import com.cityfruit.myapplication.base_fg.annotations.*
+import com.cityfruit.myapplication.base_fg.annotations.AnnotationParser
+import com.cityfruit.myapplication.base_fg.annotations.Constrain
+import com.cityfruit.myapplication.base_fg.annotations.ConstrainHome
+import com.cityfruit.myapplication.base_fg.annotations.LaunchMode
 import com.cityfruit.myapplication.base_fg.fragments.BaseLinkageFragment
-import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
-import java.lang.NullPointerException
 
 /**
  * created by zjj on 19.05.14
@@ -26,16 +26,46 @@ import java.lang.NullPointerException
 
 abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
 
-    constructor(activity: FragmentActivity, @IdRes containerId: Int, curItem: String, indicatorsParent: ViewGroup? = null, vararg fragments: BaseLinkageFragment?) : super(activity, containerId) {
-        init(fragments.filterNotNull().toList(), indicatorsParent, curItem)
+    constructor(activity: FragmentActivity, @IdRes containerId: Int, curIndex: Int, indicatorsParent: ViewGroup, vararg fragments: BaseLinkageFragment?) : super(activity, containerId) {
+        init(fragments.filterNotNull().toList(), getViewsByViewGroup(indicatorsParent), curIndex)
     }
 
-    constructor(fragment: Fragment, @IdRes containerId: Int, curItem: String, indicatorsParent: ViewGroup? = null, vararg fragments: BaseLinkageFragment?) : super(fragment, containerId) {
-        init(fragments.filterNotNull().toList(), indicatorsParent, curItem)
+    constructor(fragment: Fragment, @IdRes containerId: Int, curIndex: Int, indicatorsParent: ViewGroup, vararg fragments: BaseLinkageFragment?) : super(fragment, containerId) {
+        init(fragments.filterNotNull().toList(), getViewsByViewGroup(indicatorsParent), curIndex)
     }
 
-    private fun init(fragments: List<BaseLinkageFragment>, indicatorsParent: ViewGroup?, curItem: String) {
+    constructor(activity: FragmentActivity, @IdRes containerId: Int, curIndex: Int, indicatorViews: List<View>, vararg fragments: BaseLinkageFragment?) : super(activity, containerId) {
+        init(fragments.filterNotNull().toList(), indicatorViews, curIndex)
+    }
+
+    constructor(fragment: Fragment, @IdRes containerId: Int, curIndex: Int, indicatorViews: List<View>, vararg fragments: BaseLinkageFragment?) : super(fragment, containerId) {
+        init(fragments.filterNotNull().toList(), indicatorViews, curIndex)
+    }
+
+
+    private fun getViewsByViewGroup(indicatorsParent: ViewGroup?): List<View> {
+        if (indicatorsParent == null || indicatorsParent.childCount <= 0) {
+            throw IllegalArgumentException("if you aren't set the linkage view in your LinkageFragment, so the indicators parent must not be empty")
+        }
+        val children = mutableListOf<View>()
+        for (i in 0 until indicatorsParent.childCount) {
+            children.add(indicatorsParent.getChildAt(i))
+        }
+        return children
+    }
+
+    private fun checkChildValidate(fragmentSize: Int, indicators: List<View>) {
+        val canSeedByViews = indicators.size == fragmentSize
+        if (!canSeedByViews) {
+            throw IllegalArgumentException("if you aren't set the linkage view in your LinkageFragment, so the indicators size must equals the fragments size")
+        }
+    }
+
+    private fun init(fragments: List<BaseLinkageFragment>, indicatorViews: List<View>, curIndex: Int) {
+        checkChildValidate(fragments.size, indicatorViews)
         if (fragments.isNullOrEmpty()) throw NullPointerException("the empty fragments was no point")
+        if (curIndex !in 0..fragments.lastIndex) throw IndexOutOfBoundsException("current index was $curIndex but fragments size was ${fragments.size}")
+        val curItem = fragments[curIndex].id
         fragments.forEach {
             val hasHome = AnnotationParser.parseCls<ConstrainHome>(it::class.java) != null
             val hasLaunchMode = AnnotationParser.parseCls<LaunchMode>(it::class.java) != null
@@ -50,16 +80,9 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
                 throw IllegalStateException("the base fragment manager was not supported by LaunchMode annotation")
             }
         }
-        val canSeedByViews = indicatorsParent?.childCount == fragments.size
-        if (indicatorsParent != null && !canSeedByViews) {
-            throw IllegalArgumentException("if you aren't set the linkage view in your LinkageFragment, so the indicators size must equals the fragments size")
-        }
-        if (indicatorsParent != null && canSeedByViews) {
-            for (i in 0 until indicatorsParent.childCount) {
-                val v: View? = indicatorsParent.getChildAt(i)
-                fragments[i].linkageView = v
-                attachView(v)
-            }
+        indicatorViews.forEachIndexed { i, v ->
+            fragments[i].linkageView = v
+            attachView(v)
         }
         addFragments(fragments)
         show(curItem, true)
@@ -95,8 +118,8 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
     }
 
     private fun initViews() {
-        getFragments()?.forEach {
-            it.linkageView?.setOnClickListener { _ -> showFragment(it.id) }
+        getFragments()?.forEach { frg ->
+            frg.linkageView?.setOnClickListener { showFragment(frg.id) }
         }
     }
 
@@ -105,12 +128,12 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
     }
 
     override fun syncSelectState(selectId: String) {
+
+        fun onSelectState(v: View?, isSelected: Boolean) {
+            if (v?.isSelected != isSelected) v?.isSelected = isSelected
+        }
         getFragments()?.forEach {
             onSelectState(it.linkageView, it.id == selectId)
         }
-    }
-
-    private fun onSelectState(v: View?, isSelected: Boolean) {
-        if (v?.isSelected != isSelected) v?.isSelected = isSelected
     }
 }

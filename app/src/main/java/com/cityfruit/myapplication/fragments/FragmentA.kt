@@ -3,6 +3,9 @@ package com.cityfruit.myapplication.fragments
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.cityfruit.myapplication.R
 import com.cityfruit.myapplication.base_fg.BackMode
@@ -21,13 +24,8 @@ class FragmentA : ConstrainFragment() {
 
     @Container
     var frgContainer: FrameLayout? = null
-
-    override val layoutId: Int
-        get() = R.layout.fragment_a
-
-
-    override fun onPostValue(bundle: Bundle?) {
-        printBundle(bundle, false)
+    override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
+        return inflater.inflate(R.layout.fragment_a, container, false)
     }
 
     override fun initView() {
@@ -50,7 +48,7 @@ class FragmentA : ConstrainFragment() {
     override fun initData() {
         val text = javaClass.simpleName
         txt.text = text
-        bg.setBackgroundColor(activity?.getColor(R.color.c1) ?: Color.BLACK)
+//        bg.setBackgroundColor(activity?.getColor(R.color.c1) ?: Color.BLACK)
         Log.e("---- ", "$text.initData , backMod was LASTING")
     }
 }
