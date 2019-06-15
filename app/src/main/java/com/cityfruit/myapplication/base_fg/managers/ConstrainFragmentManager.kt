@@ -27,7 +27,6 @@ internal open class ConstrainFragmentManager(manager: FragmentManager, @IdRes co
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
     }
 
-
     @UiThread
     fun getCurrentStackSize(): Int {
         return stack?.size ?: 0
