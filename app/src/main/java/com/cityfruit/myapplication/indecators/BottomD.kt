@@ -15,8 +15,9 @@ import kotlinx.android.synthetic.main.bottom.*
 class BottomD : BaseLinkageFragment() {
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
-        return inflater.inflate(R.layout.bottom, container, false)
+        return inflater.inflate(R.layout.fragment_a, container, false)
     }
+
     @Container
     var container: FrameLayout? = null
 

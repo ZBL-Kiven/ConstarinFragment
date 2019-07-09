@@ -1,9 +1,7 @@
 package com.cityfruit.myapplication.indecators
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.cityfruit.myapplication.R
@@ -20,20 +18,18 @@ class BottomA : BaseLinkageFragment() {
     var contrainer: ViewGroup? = null
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
-        return inflater.inflate(R.layout.fragment_b, container, false)
+        return inflater.inflate(R.layout.fragment_a, container, false)
     }
 
     override fun initView() {
         contrainer = fragment_container
         btn01.setOnClickListener {
             contrainer?.visibility = VISIBLE
-            startFragmentByNewTask(FragmentD::class.java, null, { contrainer?.removeAllViews();contrainer?.visibility = GONE })
+            startFragmentByNewTask(FragmentD::class.java, null, { contrainer?.removeAllViews()})
         }
     }
 
     override fun initData() {
-
-        //        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, BottomB(), BottomC(), BottomD()) {}
-
+        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, BottomB(), BottomC(), BottomD()) {}
     }
 }

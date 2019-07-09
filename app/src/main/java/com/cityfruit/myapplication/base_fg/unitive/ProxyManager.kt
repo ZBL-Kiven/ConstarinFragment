@@ -5,7 +5,6 @@ import com.cityfruit.myapplication.base_fg.annotations.ConstrainFragmentAnnotati
 import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
 import com.cityfruit.myapplication.base_fg.getSimpleId
 import com.cityfruit.myapplication.base_fg.managers.ConstrainFragmentManager
-import java.lang.NullPointerException
 
 data class ProxyManager<T : ConstrainFragment>(internal val mFragmentClass: Class<T>, val id: String, val backMode: Int, val launchMode: Int, val isHome: Boolean, val bundle: Bundle?) {
 
@@ -28,6 +27,10 @@ data class ProxyManager<T : ConstrainFragment>(internal val mFragmentClass: Clas
 
     fun finish(obs: (() -> Unit)? = null) {
         fragmentManager?.finishFragment(id, obs)
+    }
+
+    fun clearStack() {
+        fragmentManager?.clearStack()
     }
 
     fun <CLS : ConstrainFragment> start(fragmentCls: Class<CLS>, bundle: Bundle?) {

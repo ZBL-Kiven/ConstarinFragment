@@ -7,10 +7,12 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
+import com.cityfruit.myapplication.base_fg.FMStore
 import com.cityfruit.myapplication.base_fg.fragments.BaseFragment
 import com.cityfruit.myapplication.base_fg.log
 import com.cityfruit.myapplication.base_fg.unitive.FragmentObserver
 import com.cityfruit.myapplication.base_fg.unitive.FragmentOperator
+import java.util.*
 import java.lang.NullPointerException
 
 /**
@@ -19,12 +21,23 @@ import java.lang.NullPointerException
 @UiThread
 abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
+    val managerId: String = UUID.randomUUID().toString()
     private val fragmentManager: FragmentManager
     private val containId: Int
 
-    constructor(fragment: Fragment, containId: Int) : this(fragment.childFragmentManager, containId)
+    constructor(fragment: Fragment, containId: Int) : this(fragment.childFragmentManager, containId) {
+        if (fragment is BaseFragment) {
+            FMStore.putAManager(fragment.managerId, getManager())
+        }
+    }
 
-    constructor(act: FragmentActivity, containId: Int) : this(act.supportFragmentManager, containId)
+    constructor(act: FragmentActivity, containId: Int) : this(act.supportFragmentManager, containId) {
+        FMStore.putAManager(null, getManager())
+    }
+
+    private fun getManager(): FragmentHelper<*> {
+        return this
+    }
 
     constructor(f: FragmentManager, c: Int) {
         fragmentManager = f;containId = c
@@ -57,6 +70,11 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         return mFragments[id]
     }
 
+    @UiThread
+    fun getCurrentFragment(): F? {
+        return mFragments[currentItem]
+    }
+
     /**
      * it could be ANR，when the fragment was transaction by some long tasks
      * setFragmentObserver can pause the transaction,call observer's method : StateChange to resume this operation when it was finalized
@@ -73,14 +91,18 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
     @UiThread
     fun addFragments(fragments: List<F>?) {
-        if (!fragments.isNullOrEmpty()) fragments.forEach { mFragments[it.id] = it }
+        if (!fragments.isNullOrEmpty()) fragments.forEach {
+            mFragments[it.id] = it.apply {
+                this.managerId = this@FragmentHelper.managerId
+            }
+        }
     }
 
     @UiThread
     fun removeFragmentById(id: String, onRemoved: (() -> Unit)? = null) {
         log("removeFragmentById : $id")
         fun remove(frg: F) {
-            runInTransaction {
+            runInTransaction(true, frg) {
                 it.remove(frg)
                 mFragments.remove(id)
                 onRemoved?.invoke()
@@ -143,14 +165,14 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     private fun showNewFragment(onShown: ((cur: String) -> Unit)? = null) {
         getFragmentById(currentItem)?.let { frg ->
             fun shown() {
-                runInTransaction { it.show(frg) }
+                runInTransaction(true, frg) { it.show(frg) }
                 onShown?.invoke(frg.id)
             }
             if (frg.isAdded) {
                 frg.onResume()
                 (fragmentObserver?.beforeHiddenChange(frg, false) { shown() }) ?: shown()
             } else {
-                frg.let { fragmentManager.beginTransaction().add(containId, frg, frg.javaClass.simpleName).show(frg).commit() }
+                frg.let { fragmentManager.beginTransaction().add(containId, frg, frg.javaClass.simpleName).show(frg).commit();onShown?.invoke(frg.id) }
             }
         } ?: throw NullPointerException("bad call ! ,case : your current shown item was never instanced form data source")
     }
@@ -161,13 +183,13 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         }
     }
 
-    private fun hideFragment(v: BaseFragment?, isRemoved: Boolean, onHidden: (() -> Unit)? = null) {
-        fun hide(v: BaseFragment) {
+    private fun hideFragment(v: F?, isRemoved: Boolean, onHidden: (() -> Unit)? = null) {
+        fun hide(v: F) {
             if (v.isResumed) {
                 v.onPause()
                 v.onStop()
             }
-            runInTransaction { it.hide(v);onHidden?.invoke() }
+            runInTransaction(true, v) { it.hide(v);onHidden?.invoke() }
         }
 
         if (v == null) {
@@ -188,10 +210,10 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         return true
     }
 
-    private fun runInTransaction(run: (FragmentTransaction) -> Unit) {
+    private fun runInTransaction(isHidden: Boolean, fragment: F, run: (FragmentTransaction) -> Unit) {
         val transaction = fragmentManager.beginTransaction()
         try {
-            beginTransaction(transaction, currentItem, mFragments)
+            beginTransaction(isHidden, transaction, fragment.javaClass)
             run(transaction)
         } finally {
             transaction.commit()

@@ -4,28 +4,20 @@ import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.annotation.UiThread
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
 import com.cityfruit.myapplication.base_fg.BackMode
 import com.cityfruit.myapplication.base_fg.LaunchMode
 import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
-import com.cityfruit.myapplication.base_fg.getSimpleId
 import com.cityfruit.myapplication.base_fg.log
 import com.cityfruit.myapplication.base_fg.unitive.ProxyManager
-import java.lang.NullPointerException
+import com.cityfruit.myapplication.base_fg.getSimpleId
 import java.util.*
 
-internal open class ConstrainFragmentManager(manager: FragmentManager, @IdRes containerId: Int, val whenEmptyStack: () -> Unit) : FragmentHelper<ConstrainFragment>(manager, containerId) {
-
-    val managerId: String = UUID.randomUUID().toString()
+internal abstract class ConstrainFragmentManager(manager: FragmentManager, @IdRes containerId: Int, val whenEmptyStack: () -> Unit) : FragmentHelper<ConstrainFragment>(manager, containerId) {
 
     private var stack: Stack<ProxyManager<*>>? = null
         get() {
             if (field == null) field = Stack();return field
         }
-
-    override fun beginTransaction(transaction: FragmentTransaction, curShowId: String, mFragments: MutableMap<String, ConstrainFragment>) {
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-    }
 
     @UiThread
     fun getCurrentStackSize(): Int {
@@ -51,6 +43,7 @@ internal open class ConstrainFragmentManager(manager: FragmentManager, @IdRes co
                     (0 until (it.lastIndex - index)).forEach { _ ->
                         stack?.pop()
                     }
+                    it.push(current)
                 }
                 printStack()
             }
@@ -140,6 +133,18 @@ internal open class ConstrainFragmentManager(manager: FragmentManager, @IdRes co
             }
             printStack()
         }
+    }
+
+    @UiThread
+    fun clearStack() {
+        if (stack?.isNotEmpty() == true) {
+            val cur = stack?.pop()
+            while (stack?.isNotEmpty() == true) {
+                stack?.pop()
+            }
+            stack?.push(cur)
+        }
+        printStack()
     }
 
     private fun printStack() {

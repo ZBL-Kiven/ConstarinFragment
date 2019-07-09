@@ -10,17 +10,14 @@ import android.widget.FrameLayout
 import com.cityfruit.myapplication.R
 import com.cityfruit.myapplication.base_fg.BackMode
 import com.cityfruit.myapplication.base_fg.annotations.Constrain
-import com.cityfruit.myapplication.base_fg.annotations.ConstrainHome
 import com.cityfruit.myapplication.base_fg.annotations.Container
-import com.cityfruit.myapplication.base_fg.annotations.LaunchMode
 import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
 import com.cityfruit.myapplication.base_fg.startFragmentByNewTask
 import com.cityfruit.myapplication.getBundle
 import com.cityfruit.myapplication.printBundle
 import kotlinx.android.synthetic.main.fragment_a.*
 
-@LaunchMode(mode = com.cityfruit.myapplication.base_fg.LaunchMode.FOLLOW)
-@Constrain(id = "FragmentG", backMode = BackMode.LASTING)
+@Constrain(id = "FragmentG", backMode = BackMode.ONLY_ONCE)
 class FragmentG : ConstrainFragment() {
 
     @Container

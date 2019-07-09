@@ -2,13 +2,12 @@ package com.cityfruit.myapplication.base_fg.annotations
 
 import java.lang.reflect.Field
 import java.lang.reflect.Method
-import java.util.ArrayList
 
 @Suppress("unused")
 object AnnotationParser {
 
     inline fun <reified T : Annotation> parseMethod(clz: Class<*>): List<Pair<Method, T>> {
-        val annotationSet = ArrayList<Pair<Method, T>>()
+        val annotationSet = arrayListOf<Pair<Method, T>>()
         val tCls = T::class.java
         try {
             for (method in clz.declaredMethods) {
@@ -39,7 +38,7 @@ object AnnotationParser {
     }
 
     inline fun <reified T : Annotation> parseField(clz: Class<*>): List<Pair<Field, T>> {
-        val annotationSet = ArrayList<Pair<Field, T>>()
+        val annotationSet = arrayListOf<Pair<Field, T>>()
         val tCls = T::class.java
         val fields = clz.declaredFields
         for (field in fields) {

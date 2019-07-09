@@ -15,11 +15,13 @@ import java.util.*
 abstract class BaseFragment : Fragment() {
 
     open val id: String = UUID.randomUUID().toString()
+    internal var managerId: String = ""
     var rootView: View? = null
     var removing = false
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        rootView = getRootView(inflater, container, false)
+        rootView = getView(inflater, container)
         val parent = rootView?.parent as ViewGroup?
         if (parent != null && parent.childCount > 0) {
             parent.removeView(rootView)
@@ -33,7 +35,7 @@ abstract class BaseFragment : Fragment() {
         initData()
     }
 
-    protected abstract fun getRootView(inflater: LayoutInflater, container: ViewGroup?, attachToRoot: Boolean): View
+    protected abstract fun getView(inflater: LayoutInflater, container: ViewGroup?): View
 
     protected abstract fun initView()
 

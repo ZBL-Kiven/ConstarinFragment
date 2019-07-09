@@ -1,10 +1,11 @@
 package com.cityfruit.myapplication.base_fg
 
 import android.util.Log
-import android.view.View
-import com.cityfruit.myapplication.base_fg.fragments.BaseLinkageFragment
-import com.cityfruit.myapplication.base_fg.managers.ConstrainFragmentManager
-import kotlin.NullPointerException
+import com.cityfruit.myapplication.base_fg.BackMode.LASTING
+import com.cityfruit.myapplication.base_fg.BackMode.ONLY_ONCE
+import com.cityfruit.myapplication.base_fg.LaunchMode.CLEAR_BACK_STACK
+import com.cityfruit.myapplication.base_fg.LaunchMode.FOLLOW
+import com.cityfruit.myapplication.base_fg.LaunchMode.STACK
 
 /**
  * created by zjj on 19.05.14
@@ -35,43 +36,6 @@ object LaunchMode {
 object BackMode {
     const val ONLY_ONCE = 1
     const val LASTING = 2
-}
-
-/**
- * the fragment id generator , create a specially id and only decrypt on this class
- *
- * the I means index
- *
- * the M means manager_id
- *
- * */
-private const val ID_DOT = "%s-I-%d-M-%s"
-
-@Throws(NullPointerException::class)
-internal fun generateId(id: String, manager: ConstrainFragmentManager): String {
-    var indexOfLast = -1
-    manager.getFragmentIds()?.asReversed()?.forEach {
-        if (it.contains(id)) {
-            val simpled = getSimpleId(it)
-            if (simpled.first == id && indexOfLast <= simpled.second) {
-                indexOfLast = simpled.second + 1
-            }
-        }
-    }
-    return String.format(ID_DOT, id, indexOfLast, manager.managerId)
-}
-
-/**
- * get a parsed fragment id
- * */
-@Throws(NullPointerException::class)
-internal fun getSimpleId(id: String): Triple<String, Int, String> {
-    val array = id.split("-I-|-M-".toRegex())
-    try {
-        return Triple(array[0], array[1].toInt(), array[2])
-    } catch (e: Exception) {
-        throw NullPointerException("can't parsed the fragment id, may id $id was wrong form generate")
-    }
 }
 
 fun log(s: String) {

@@ -8,7 +8,7 @@ import com.cityfruit.myapplication.base_fg.fragments.BaseFragment
  */
 interface FragmentOperator<F : BaseFragment> {
 
-    fun beginTransaction(transaction: FragmentTransaction, curShowId: String, mFragments: MutableMap<String, F>)
+    fun beginTransaction(isHidden: Boolean, transaction: FragmentTransaction, frgCls: Class<F>)
 
     fun syncSelectState(selectId: String)
 

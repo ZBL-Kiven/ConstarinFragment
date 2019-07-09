@@ -1,7 +1,5 @@
 package com.cityfruit.myapplication.fragments
 
-import android.graphics.Color
-import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,20 +8,18 @@ import android.widget.FrameLayout
 import com.cityfruit.myapplication.R
 import com.cityfruit.myapplication.base_fg.BackMode
 import com.cityfruit.myapplication.base_fg.annotations.Constrain
-import com.cityfruit.myapplication.base_fg.annotations.ConstrainHome
 import com.cityfruit.myapplication.base_fg.annotations.Container
 import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
 import com.cityfruit.myapplication.base_fg.startFragmentByNewTask
 import com.cityfruit.myapplication.getBundle
-import com.cityfruit.myapplication.printBundle
 import kotlinx.android.synthetic.main.fragment_a.*
 
-@ConstrainHome
-@Constrain(id = "FragmentA", backMode = BackMode.LASTING)
+@Constrain(id = "FragmentA", backMode = BackMode.ONLY_ONCE)
 class FragmentA : ConstrainFragment() {
 
     @Container
     var frgContainer: FrameLayout? = null
+
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.fragment_a, container, false)
     }
@@ -48,7 +44,7 @@ class FragmentA : ConstrainFragment() {
     override fun initData() {
         val text = javaClass.simpleName
         txt.text = text
-//        bg.setBackgroundColor(activity?.getColor(R.color.c1) ?: Color.BLACK)
+        //        bg.setBackgroundColor(activity?.getColor(R.color.c1) ?: Color.BLACK)
         Log.e("---- ", "$text.initData , backMod was LASTING")
     }
 }

@@ -8,11 +8,11 @@ import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentTransaction
 import android.view.View
 import android.view.ViewGroup
-import com.cityfruit.myapplication.base_fg.annotations.AnnotationParser
-import com.cityfruit.myapplication.base_fg.annotations.Constrain
-import com.cityfruit.myapplication.base_fg.annotations.ConstrainHome
-import com.cityfruit.myapplication.base_fg.annotations.LaunchMode
+import com.cityfruit.myapplication.base_fg.annotations.*
 import com.cityfruit.myapplication.base_fg.fragments.BaseLinkageFragment
+import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
+import java.lang.NullPointerException
 
 /**
  * created by zjj on 19.05.14
@@ -42,6 +42,13 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
         init(fragments.filterNotNull().toList(), indicatorViews, curIndex)
     }
 
+    /**
+     * override this method to build your childView
+     *
+     * in mind ,the views may disorder or defect
+     * */
+    open fun onViewAttach(v: View) {}
+
 
     private fun getViewsByViewGroup(indicatorsParent: ViewGroup?): List<View> {
         if (indicatorsParent == null || indicatorsParent.childCount <= 0) {
@@ -57,7 +64,7 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
     private fun checkChildValidate(fragmentSize: Int, indicators: List<View>) {
         val canSeedByViews = indicators.size == fragmentSize
         if (!canSeedByViews) {
-            throw IllegalArgumentException("if you aren't set the linkage view in your LinkageFragment, so the indicators size must equals the fragments size")
+            throw IllegalArgumentException("the indicator views size must equals the fragments size")
         }
     }
 
@@ -93,13 +100,6 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
     }
 
     /**
-     * override this method to build your childView
-     *
-     * in mind ,the views may disorder or defect
-     * */
-    open fun onViewAttach(v: View) {}
-
-    /**
      *  prevent the quick click event jitter
      * */
     private var clickTime: Long = 0
@@ -119,11 +119,13 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
 
     private fun initViews() {
         getFragments()?.forEach { frg ->
-            frg.linkageView?.setOnClickListener { showFragment(frg.id) }
+            frg.linkageView?.setOnClickListener {
+                showFragment(frg.id)
+            }
         }
     }
 
-    override fun beginTransaction(transaction: FragmentTransaction, curShowId: String, mFragments: MutableMap<String, BaseLinkageFragment>) {
+    override fun beginTransaction(isHidden: Boolean, transaction: FragmentTransaction, frgCls: Class<BaseLinkageFragment>) {
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
     }
 
