@@ -1,4 +1,4 @@
-package com.cityfruit.myapplication.base_fg.annotations
+package com.cityfruit.myapplication.base_fg.annotations.parser
 
 import java.lang.reflect.Field
 import java.lang.reflect.Method

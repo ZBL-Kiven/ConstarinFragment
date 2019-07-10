@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.cityfruit.myapplication.R
+import com.cityfruit.myapplication.ToastUtils
 import com.cityfruit.myapplication.base_fg.annotations.Container
 import com.cityfruit.myapplication.base_fg.fragments.BaseLinkageFragment
 import com.cityfruit.myapplication.base_fg.startFragmentByNewTask
@@ -15,7 +16,7 @@ import kotlinx.android.synthetic.main.bottom.*
 class BottomD : BaseLinkageFragment() {
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
-        return inflater.inflate(R.layout.fragment_a, container, false)
+        return inflater.inflate(R.layout.bottom, container, false)
     }
 
     @Container
@@ -27,7 +28,8 @@ class BottomD : BaseLinkageFragment() {
 
     override fun initData() {
         startFragmentByNewTask(FragmentA::class.java, getBundle("bottomD 启动了 FrgA"), {
-            container?.removeAllViews()
+            ToastUtils.show(context, "it is already last in stack")
+            false
         })
     }
 

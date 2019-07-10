@@ -3,12 +3,12 @@
 package com.cityfruit.myapplication.base_fg.managers
 
 import android.support.annotation.UiThread
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import com.cityfruit.myapplication.base_fg.FMStore
 import com.cityfruit.myapplication.base_fg.fragments.BaseFragment
+import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
 import com.cityfruit.myapplication.base_fg.log
 import com.cityfruit.myapplication.base_fg.unitive.FragmentObserver
 import com.cityfruit.myapplication.base_fg.unitive.FragmentOperator
@@ -21,26 +21,20 @@ import java.lang.NullPointerException
 @UiThread
 abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
-    val managerId: String = UUID.randomUUID().toString()
+    open val managerId: String = UUID.randomUUID().toString()
     private val fragmentManager: FragmentManager
     private val containId: Int
 
-    constructor(fragment: Fragment, containId: Int) : this(fragment.childFragmentManager, containId) {
-        if (fragment is BaseFragment) {
-            FMStore.putAManager(fragment.managerId, getManager())
-        }
-    }
+    constructor(fragment: BaseFragment, containId: Int) : this(if (fragment is ConstrainFragment) fragment.managerId else fragment.id, fragment.childFragmentManager, containId)
 
-    constructor(act: FragmentActivity, containId: Int) : this(act.supportFragmentManager, containId) {
-        FMStore.putAManager(null, getManager())
+    constructor(act: FragmentActivity, containId: Int) : this("", act.supportFragmentManager, containId)
+
+    constructor(managerId: String, f: FragmentManager, c: Int) {
+        FMStore.putAManager(managerId, getManager());fragmentManager = f;containId = c
     }
 
     private fun getManager(): FragmentHelper<*> {
         return this
-    }
-
-    constructor(f: FragmentManager, c: Int) {
-        fragmentManager = f;containId = c
     }
 
     private var currentItem = ""
@@ -63,6 +57,15 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         return if (mFragments.isNullOrEmpty()) null else mFragments.mapTo(arrayListOf()) {
             it.key
         }
+    }
+
+    /**
+     * it may useless when the activity inserted,
+     *
+     * only supported by fragmentHelper extensions.
+     * */
+    fun getTopOfStack(): BaseFragment? {
+        return FMStore.getTopConstrainFragment(managerId)
     }
 
     @UiThread
@@ -222,5 +225,6 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
     protected fun clearFragments() {
         mFragments.clear()
+        fragmentManager.popBackStack()
     }
 }

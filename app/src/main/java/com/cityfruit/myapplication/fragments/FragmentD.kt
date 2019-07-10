@@ -1,5 +1,6 @@
 package com.cityfruit.myapplication.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -34,7 +35,7 @@ class FragmentD : ConstrainFragment() {
         frgContainer = fragment_container
         a_btn_new_task.setOnClickListener {
             startFragmentByNewTask(FragmentE::class.java, getBundle("frgD ==> frgE by new Task"), {
-                finish()
+                true
             })
         }
 
@@ -50,7 +51,7 @@ class FragmentD : ConstrainFragment() {
     override fun initData() {
         val text = javaClass.simpleName
         txt.text = text
-//        bg.setBackgroundColor(activity?.getColor(R.color.c4) ?: Color.BLACK)
+        bg.setBackgroundColor(activity?.getColor(R.color.c4) ?: Color.BLACK)
         Log.e("---- ", "$text.initData , backMod was LASTING")
     }
 }

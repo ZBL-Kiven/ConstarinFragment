@@ -4,15 +4,14 @@ import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.annotation.UiThread
 import android.support.v4.app.FragmentManager
-import com.cityfruit.myapplication.base_fg.BackMode
-import com.cityfruit.myapplication.base_fg.LaunchMode
+import com.cityfruit.myapplication.base_fg.*
+import com.cityfruit.myapplication.base_fg.FMStore
 import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
-import com.cityfruit.myapplication.base_fg.log
-import com.cityfruit.myapplication.base_fg.unitive.ProxyManager
 import com.cityfruit.myapplication.base_fg.getSimpleId
+import com.cityfruit.myapplication.base_fg.unitive.ProxyManager
 import java.util.*
 
-internal abstract class ConstrainFragmentManager(manager: FragmentManager, @IdRes containerId: Int, val whenEmptyStack: () -> Unit) : FragmentHelper<ConstrainFragment>(manager, containerId) {
+internal abstract class ConstrainFragmentManager(managerId: String, manager: FragmentManager, @IdRes containerId: Int, val clearWhenEmptyStack: () -> Boolean) : FragmentHelper<ConstrainFragment>(managerId, manager, containerId) {
 
     private var stack: Stack<ProxyManager<*>>? = null
         get() {
@@ -23,7 +22,6 @@ internal abstract class ConstrainFragmentManager(manager: FragmentManager, @IdRe
     fun getCurrentStackSize(): Int {
         return stack?.size ?: 0
     }
-
 
     @UiThread
     fun setBackStack(backed: ProxyManager<*>) {
@@ -113,21 +111,26 @@ internal abstract class ConstrainFragmentManager(manager: FragmentManager, @IdRe
     }
 
     @UiThread
-    fun finishFragment(id: String, onFinished: (() -> Unit)? = null) {
-        if (stack?.peek()?.id != id) onFinished?.invoke(); else {
+    fun finishFragment(id: String, onFinished: ((isEmptyStack: Boolean) -> Unit)? = null) {
+        if (stack?.peek()?.id != id) onFinished?.invoke(false); else {
             stack?.pop()?.let {
                 if (it.isHome || stack.isNullOrEmpty()) {
                     stack?.clear()
-                    clearFragments()
-                    whenEmptyStack()
+                    if (clearWhenEmptyStack()) {
+                        clearFragments()
+                        FMStore.removeAManager(it.getManagerId())
+                        onFinished?.invoke(true)
+                    } else {
+                        stack?.push(it)
+                    }
                     return
                 }
                 when (it.backMode) {
                     BackMode.ONLY_ONCE -> {
-                        removeFragmentById(it.id, onFinished)
+                        removeFragmentById(it.id) { onFinished?.invoke(false) }
                     }
                     BackMode.LASTING -> {
-                        hideFragment(it.id, onFinished)
+                        hideFragment(it.id) { onFinished?.invoke(false) }
                     }
                 };syncFrag(true, it.getResultBundle())
             }

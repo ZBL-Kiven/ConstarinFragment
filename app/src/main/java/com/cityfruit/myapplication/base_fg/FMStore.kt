@@ -1,67 +1,70 @@
 package com.cityfruit.myapplication.base_fg
 
-import android.os.Bundle
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
-import android.view.ViewGroup
-import com.cityfruit.myapplication.base_fg.FMStore.getTopConstrainFragment
-import com.cityfruit.myapplication.base_fg.annotations.AnnotationParser
-import com.cityfruit.myapplication.base_fg.annotations.ConstrainFragmentAnnotationParser
-import com.cityfruit.myapplication.base_fg.annotations.Container
 import com.cityfruit.myapplication.base_fg.fragments.BaseFragment
-import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
 import com.cityfruit.myapplication.base_fg.managers.BaseFragmentManager
 import com.cityfruit.myapplication.base_fg.managers.ConstrainFragmentManager
 import com.cityfruit.myapplication.base_fg.managers.FragmentHelper
-import java.security.InvalidParameterException
 
 internal object FMStore {
 
     data class ManagerInfo<F : BaseFragment>(var nextId: String?, val pId: String?, val manager: FragmentHelper<F>)
 
-    val managers = mutableMapOf<String, ManagerInfo<*>>()
+    private val managers = mutableMapOf<String, ManagerInfo<*>>()
 
-    fun <F : BaseFragment> putAManager(curManagerId: String?, manager: FragmentHelper<F>) {
-        if (managers.contains(curManagerId)) managers[curManagerId]?.nextId = manager.managerId
-        val managerInfo = ManagerInfo("", curManagerId, manager)
-        managers[manager.managerId] = managerInfo
+    /**
+     * @param key if called object was a linkage fragment instance, the pid is managerId but the fragment id is the mapping keys
+     * */
+    fun <F : BaseFragment> putAManager(curManagerId: String?, manager: FragmentHelper<F>, key: String = "") {
+        if (key.isEmpty()) {
+            if (!curManagerId.isNullOrEmpty() && managers.contains(curManagerId)) managers[curManagerId]?.nextId = manager.managerId
+            val managerInfo = ManagerInfo("", curManagerId, manager)
+            managers[manager.managerId] = managerInfo
+        } else {
+            val managerInfo = ManagerInfo("", curManagerId, manager)
+            managers[key] = managerInfo
+        }
     }
 
-    fun getTopConstrainFragment(managerId: String?): BaseFragment? {
+    fun removeAManager(managerId: String?) {
+        if (managers.contains(managerId)) {
+            val curFinishingFrg = managers[managerId] ?: return
+            managers[curFinishingFrg.pId]?.let {
+                it.nextId = ""
+            }
+            managers.remove(managerId)
+        }
+    }
+
+    /**
+     * get topic for BaseFragmentManager and ConstrainFragmentManager
+     *
+     *
+     */
+    fun getTopConstrainFragment(managerId: String?, ase: Boolean = false): BaseFragment? {
         if (!managers.contains(managerId)) return null
         managers[managerId]?.let {
-            val nextId = it.nextId
-            val pid = it.pId
-            val nextFrg = managers[nextId]
             when (it.manager) {
                 is ConstrainFragmentManager -> {
-                    nextFrg ?: return@getTopConstrainFragment it.manager.getCurrentFragment()
-                    return@getTopConstrainFragment getTopConstrainFragment(nextId)
+                    val next = if (ase) it.pId else it.nextId
+                    val nextFrg = managers[next]
+                    if (nextFrg == null || ase) {
+                        return@getTopConstrainFragment it.manager.getCurrentFragment()
+                    }
+                    return@getTopConstrainFragment getTopConstrainFragment(next)
                 }
                 is BaseFragmentManager -> {
-                    val previous = managers[pid]
-                    if (nextFrg == null) {
-                        return@getTopConstrainFragment when (previous) {
-                            is ConstrainFragmentManager -> {
-                                previous.getCurrentFragment()
-                            }
-                            is BaseFragmentManager -> {
-                                getTopConstrainFragment(pid)
-                            }
-                            else -> null
-                        }
-                    } else {
-                        return@getTopConstrainFragment getTopConstrainFragment(nextId)
+                    val nextId = if (ase) it.pId else managers[it.manager.getCurrentItemId()]?.nextId
+                    val nextFrg = managers[nextId]
+                    if (!ase && nextFrg == null) {
+                        return@getTopConstrainFragment getTopConstrainFragment(it.manager.managerId, true)
                     }
+                    return if (ase && nextFrg == null) null
+                    else getTopConstrainFragment(nextId)
                 }
                 else -> null
             }
         } ?: return null
     }
-}
-
-fun getTopFragment(managerId: String?): BaseFragment? {
-    return getTopConstrainFragment(managerId)
 }
 
 /**
@@ -99,28 +102,4 @@ internal fun getSimpleId(id: String): Triple<String, Int, String> {
     } catch (e: Exception) {
         throw NullPointerException("can't parsed the fragment id, may id $id was wrong form generate")
     }
-}
-
-
-private fun <T : ConstrainFragment> startFrag(container: ViewGroup, fragmentManager: FragmentManager, fragmentCls: Class<T>, bundle: Bundle? = null, whenEmptyStack: () -> Unit, overrideTransaction: ((isHidden: Boolean, transaction: FragmentTransaction, curFragCls: Class<ConstrainFragment>) -> FragmentTransaction)? = null) {
-    val manager = object : ConstrainFragmentManager(fragmentManager, container.id, whenEmptyStack) {
-        override fun beginTransaction(isHidden: Boolean, transaction: FragmentTransaction, frgCls: Class<ConstrainFragment>) {
-            overrideTransaction?.invoke(isHidden, transaction, frgCls)
-        }
-    }
-    val frg = ConstrainFragmentAnnotationParser.parseAnnotations(fragmentCls, bundle, manager)
-    try {
-        frg.setFragmentManager(manager).startFragment(frg)
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-}
-
-@Throws(InvalidParameterException::class, NullPointerException::class)
-private fun <T : ConstrainFragment, R> startFrag(instance: R, cls: Class<R>, fragmentManager: FragmentManager, fragmentCls: Class<T>, bundle: Bundle? = null, whenEmptyStack: () -> Unit, overrideTransaction: ((isHidden: Boolean, transaction: FragmentTransaction, curFragCls: Class<ConstrainFragment>) -> FragmentTransaction)? = null) {
-    val containers = AnnotationParser.parseField<Container>(cls)
-    if (containers.size > 1) throw InvalidParameterException("the container must be only one in this class ,but ${containers.size} declared fond")
-    val container = containers.firstOrNull()
-    val view = container?.first?.get(instance) as? ViewGroup ?: throw InvalidParameterException("the container must be used in a ViewGroup")
-    startFrag(view, fragmentManager, fragmentCls, bundle, whenEmptyStack, overrideTransaction)
 }

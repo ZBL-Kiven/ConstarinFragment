@@ -64,6 +64,13 @@
                 android:background="@drawable/bg_01"
                 android:text=" 4 "/>
     </LinearLayout>
+    <android.support.constraint.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                          android:id="@+id/guideline" app:layout_constraintGuide_begin="20dp"
+                                          android:orientation="vertical"/>
+    <android.support.constraint.Barrier android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                        android:id="@+id/barrier" app:barrierDirection="left"/>
+    <android.support.constraint.Group android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                      android:id="@+id/group"/>
 
 
 </android.support.constraint.ConstraintLayout>

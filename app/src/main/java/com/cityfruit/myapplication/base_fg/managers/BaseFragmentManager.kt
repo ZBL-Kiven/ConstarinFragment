@@ -3,12 +3,14 @@
 package com.cityfruit.myapplication.base_fg.managers
 
 import android.support.annotation.IdRes
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentTransaction
 import android.view.View
 import android.view.ViewGroup
+import com.cityfruit.myapplication.base_fg.FMStore
 import com.cityfruit.myapplication.base_fg.annotations.*
+import com.cityfruit.myapplication.base_fg.annotations.parser.AnnotationParser
+import com.cityfruit.myapplication.base_fg.fragments.BaseFragment
 import com.cityfruit.myapplication.base_fg.fragments.BaseLinkageFragment
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
@@ -30,7 +32,7 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
         init(fragments.filterNotNull().toList(), getViewsByViewGroup(indicatorsParent), curIndex)
     }
 
-    constructor(fragment: Fragment, @IdRes containerId: Int, curIndex: Int, indicatorsParent: ViewGroup, vararg fragments: BaseLinkageFragment?) : super(fragment, containerId) {
+    constructor(fragment: BaseFragment, @IdRes containerId: Int, curIndex: Int, indicatorsParent: ViewGroup, vararg fragments: BaseLinkageFragment?) : super(fragment, containerId) {
         init(fragments.filterNotNull().toList(), getViewsByViewGroup(indicatorsParent), curIndex)
     }
 
@@ -38,7 +40,7 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
         init(fragments.filterNotNull().toList(), indicatorViews, curIndex)
     }
 
-    constructor(fragment: Fragment, @IdRes containerId: Int, curIndex: Int, indicatorViews: List<View>, vararg fragments: BaseLinkageFragment?) : super(fragment, containerId) {
+    constructor(fragment: BaseFragment, @IdRes containerId: Int, curIndex: Int, indicatorViews: List<View>, vararg fragments: BaseLinkageFragment?) : super(fragment, containerId) {
         init(fragments.filterNotNull().toList(), indicatorViews, curIndex)
     }
 
@@ -48,7 +50,6 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
      * in mind ,the views may disorder or defect
      * */
     open fun onViewAttach(v: View) {}
-
 
     private fun getViewsByViewGroup(indicatorsParent: ViewGroup?): List<View> {
         if (indicatorsParent == null || indicatorsParent.childCount <= 0) {
@@ -86,6 +87,7 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
             if (hasLaunchMode) {
                 throw IllegalStateException("the base fragment manager was not supported by LaunchMode annotation")
             }
+            FMStore.putAManager(it.managerId, this, it.id)
         }
         indicatorViews.forEachIndexed { i, v ->
             fragments[i].linkageView = v

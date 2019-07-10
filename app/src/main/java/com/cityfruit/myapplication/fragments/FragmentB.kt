@@ -36,7 +36,7 @@ class FragmentB : ConstrainFragment() {
         frgContainer = fragment_container
         a_btn_new_task.setOnClickListener {
             startFragmentByNewTask(FragmentC::class.java, getBundle("frgA ==> frgC by new Task"), {
-                finish()
+                true
             })
         }
 

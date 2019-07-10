@@ -1,7 +1,8 @@
 package com.cityfruit.myapplication.base_fg.unitive
 
 import android.os.Bundle
-import com.cityfruit.myapplication.base_fg.annotations.ConstrainFragmentAnnotationParser
+import com.cityfruit.myapplication.base_fg.annotations.parser.ConstrainFragmentAnnotationParser
+import com.cityfruit.myapplication.base_fg.fragments.BaseFragment
 import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
 import com.cityfruit.myapplication.base_fg.getSimpleId
 import com.cityfruit.myapplication.base_fg.managers.ConstrainFragmentManager
@@ -11,6 +12,14 @@ data class ProxyManager<T : ConstrainFragment>(internal val mFragmentClass: Clas
     private var fragmentManager: ConstrainFragmentManager? = null
 
     private var resultBundle: Bundle? = null
+
+    fun getManagerId(): String? {
+        return fragmentManager?.managerId
+    }
+
+    fun getStackTop(): BaseFragment? {
+        return fragmentManager?.getTopOfStack()
+    }
 
     fun getResultBundle(): Bundle? {
         return resultBundle
@@ -25,7 +34,7 @@ data class ProxyManager<T : ConstrainFragment>(internal val mFragmentClass: Clas
         return this.fragmentManager ?: throw NullPointerException("your fragment manager can not use form null!")
     }
 
-    fun finish(obs: (() -> Unit)? = null) {
+    fun finish(obs: ((isEmptyStack: Boolean) -> Unit)? = null) {
         fragmentManager?.finishFragment(id, obs)
     }
 

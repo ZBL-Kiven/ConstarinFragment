@@ -1,9 +1,8 @@
-package com.cityfruit.myapplication.base_fg.annotations
+package com.cityfruit.myapplication.base_fg.annotations.parser
 
 import android.os.Bundle
 import com.cityfruit.myapplication.base_fg.BackMode
 import com.cityfruit.myapplication.base_fg.LaunchMode.FOLLOW
-import com.cityfruit.myapplication.base_fg.annotations.AnnotationParser
 import com.cityfruit.myapplication.base_fg.annotations.Constrain
 import com.cityfruit.myapplication.base_fg.annotations.ConstrainHome
 import com.cityfruit.myapplication.base_fg.annotations.LaunchMode
