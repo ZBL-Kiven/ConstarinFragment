@@ -2,7 +2,6 @@ package com.cityfruit.myapplication.fragments
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,7 @@ import com.cityfruit.myapplication.getBundle
 import com.cityfruit.myapplication.printBundle
 import kotlinx.android.synthetic.main.fragment_a.*
 
-@Constrain(id = "FragmentG", backMode = BackMode.ONLY_ONCE)
+@Constrain(id = "FragmentG", backMode = BackMode.LASTING)
 class FragmentG : ConstrainFragment() {
 
     @Container
@@ -33,25 +32,24 @@ class FragmentG : ConstrainFragment() {
 
     override fun initView() {
         frgContainer = fragment_container
-        a_btn_new_task.setOnClickListener {
+        a_btn_new_task?.setOnClickListener {
             startFragmentByNewTask(FragmentB::class.java, getBundle("frgG ==> frgB by new Task"), {
                 true
             })
         }
 
-        a_btn_finish.setOnClickListener {
+        a_btn_finish?.setOnClickListener {
             finish()
         }
 
-        a_btn_next.setOnClickListener {
+        a_btn_next?.setOnClickListener {
             startFragment(FragmentB::class.java, getBundle("frgG ==> frgB"))
         }
     }
 
     override fun initData() {
         val text = javaClass.simpleName
-        txt.text = text
-        bg.setBackgroundColor(activity?.getColor(R.color.c7) ?: Color.BLACK)
-        Log.e("---- ", "$text.initData , backMod was LASTING")
+        txt?.text = text
+        bg?.setBackgroundColor(activity?.getColor(R.color.c7) ?: Color.BLACK)
     }
 }

@@ -38,7 +38,7 @@ internal object FMStore {
     /**
      * get topic for BaseFragmentManager and ConstrainFragmentManager
      *
-     *
+     * @param ase don't set it in called ,it used by recursive
      */
     fun getTopConstrainFragment(managerId: String?, ase: Boolean = false): BaseFragment? {
         if (!managers.contains(managerId)) return null
