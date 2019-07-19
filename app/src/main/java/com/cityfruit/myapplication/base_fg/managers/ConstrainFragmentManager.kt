@@ -116,6 +116,7 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
             stack?.pop()?.let {
                 if (it.isHome || stack.isNullOrEmpty()) {
                     stack?.clear()
+                    FMStore.checkIsConstrainParent(managerId)
                     if (clearWhenEmptyStack()) {
                         clearFragments()
                         FMStore.removeAManager(it.getManagerId())

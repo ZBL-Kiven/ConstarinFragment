@@ -31,7 +31,7 @@ object LaunchMode {
  *
  * @property ONLY_ONCE this fragment only created when used , and'll destroyed when close
  *
- * @property LASTING if the manager is running or activity was living , the fragment will exists in long
+ * @property LASTING if the manager is running or activity was living , the fragment will exists in long at stack
  * */
 object BackMode {
     const val ONLY_ONCE = 1

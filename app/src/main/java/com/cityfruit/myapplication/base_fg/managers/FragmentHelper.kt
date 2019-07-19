@@ -223,8 +223,9 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         }
     }
 
-    protected fun clearFragments() {
+    internal fun clearFragments() {
         mFragments.clear()
+        hideFragments(true) { _, _ -> return@hideFragments true }
         fragmentManager.popBackStack()
     }
 }

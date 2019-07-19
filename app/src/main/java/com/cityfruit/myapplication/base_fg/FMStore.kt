@@ -15,6 +15,12 @@ internal object FMStore {
      * @param key if called object was a linkage fragment instance, the pid is managerId but the fragment id is the mapping keys
      * */
     fun <F : BaseFragment> putAManager(curManagerId: String?, manager: FragmentHelper<F>, key: String = "") {
+        if (manager is BaseFragmentManager) {
+            val last = managers[curManagerId]
+            if (!last?.nextId.isNullOrEmpty()) {
+                throw IllegalAccessException("too many BaseFragmentManagers declared in same container")
+            }
+        }
         if (key.isEmpty()) {
             if (!curManagerId.isNullOrEmpty() && managers.contains(curManagerId)) managers[curManagerId]?.nextId = manager.managerId
             val managerInfo = ManagerInfo("", curManagerId, manager)
@@ -26,13 +32,38 @@ internal object FMStore {
     }
 
     fun removeAManager(managerId: String?) {
+
+        fun removeAllTopsFromStacks(curFinishingFrg: ManagerInfo<*>) {
+            val manager = curFinishingFrg.manager
+            managers.remove(manager.managerId)
+
+            fun removeLinkage(linkage: BaseFragmentManager?) {
+                linkage?.getFragmentIds()?.forEach {
+                    val lfm = managers[managers.remove(it)?.nextId]
+                    if (lfm != null) removeAllTopsFromStacks(lfm)
+                }
+            }
+
+            val nextId = curFinishingFrg.nextId
+            when (manager) {
+                is BaseFragmentManager -> {
+                    removeLinkage(manager)
+                }
+
+                is ConstrainFragmentManager -> {
+                    managers[nextId]?.let { removeAllTopsFromStacks(it) }
+                }
+            }
+        }
+
         if (managers.contains(managerId)) {
             val curFinishingFrg = managers[managerId] ?: return
             managers[curFinishingFrg.pId]?.let {
                 it.nextId = ""
             }
-            managers.remove(managerId)
+            removeAllTopsFromStacks(curFinishingFrg)
         }
+        log("${managers.size}")
     }
 
     /**
@@ -50,7 +81,7 @@ internal object FMStore {
                     if (nextFrg == null || ase) {
                         return@getTopConstrainFragment it.manager.getCurrentFragment()
                     }
-                    return@getTopConstrainFragment getTopConstrainFragment(next)
+                    return@getTopConstrainFragment getTopConstrainFragment(next, ase)
                 }
                 is BaseFragmentManager -> {
                     val nextId = if (ase) it.pId else managers[it.manager.getCurrentItemId()]?.nextId
@@ -59,11 +90,34 @@ internal object FMStore {
                         return@getTopConstrainFragment getTopConstrainFragment(it.manager.managerId, true)
                     }
                     return if (ase && nextFrg == null) null
-                    else getTopConstrainFragment(nextId)
+                    else getTopConstrainFragment(nextId, ase)
                 }
                 else -> null
             }
         } ?: return null
+    }
+
+    fun checkIsConstrainParent(id: String): Boolean {
+
+        fun findLastConstrainOrNull(id: String?): Boolean {
+            val curManager = managers[id]
+            val manage = managers[curManager?.pId]
+            val pid = if (manage?.manager is BaseFragmentManager) managers[manage.manager.managerId]?.pId
+            else manage?.pId
+            val lastFrag = managers[pid] ?: return false
+            return when (lastFrag.manager) {
+                is BaseFragmentManager -> {
+                    findLastConstrainOrNull(pid)
+                }
+                is ConstrainFragmentManager -> {
+                    val cf = lastFrag.manager.getCurrentFragment()
+                    if (manage?.manager is BaseFragmentManager) cf?.finish()
+                    return true
+                }
+                else -> false
+            }
+        }
+        return findLastConstrainOrNull(id)
     }
 }
 

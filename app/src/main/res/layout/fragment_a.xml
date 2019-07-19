@@ -21,22 +21,28 @@
                 android:id="@+id/a_btn_next"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="StartNext"
+                android:text="start a Fragment form this page"
                 android:padding="10dp"/>
-
-        <Button
-                android:id="@+id/a_btn_finish"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="finish"
-                android:padding="10dp"/>
-
         <Button
                 android:id="@+id/a_btn_new_task"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="new task"
+                android:text="start a Fragment by new task"
                 android:padding="10dp"/>
+
+        <Button
+                android:id="@+id/a_btn_new_linkage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="start a LinkageFragment"
+                android:padding="10dp"/>
+        <Button
+                android:id="@+id/a_btn_finish"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="finish current fragment"
+                android:padding="10dp"/>
+
 
     </LinearLayout>
 

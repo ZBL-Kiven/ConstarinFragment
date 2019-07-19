@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.cityfruit.myapplication.R
+import com.cityfruit.myapplication.addOnClickListener
 import com.cityfruit.myapplication.base_fg.BackMode
 import com.cityfruit.myapplication.base_fg.annotations.Constrain
 import com.cityfruit.myapplication.base_fg.annotations.Container
@@ -32,18 +33,21 @@ class FragmentG : ConstrainFragment() {
 
     override fun initView() {
         frgContainer = fragment_container
-        a_btn_new_task?.setOnClickListener {
+        a_btn_new_task?.addOnClickListener {
             startFragmentByNewTask(FragmentB::class.java, getBundle("frgG ==> frgB by new Task"), {
                 true
             })
         }
 
-        a_btn_finish?.setOnClickListener {
+        a_btn_finish?.addOnClickListener {
             finish()
         }
 
-        a_btn_next?.setOnClickListener {
+        a_btn_next?.addOnClickListener {
             startFragment(FragmentB::class.java, getBundle("frgG ==> frgB"))
+        }
+        a_btn_new_linkage?.addOnClickListener {
+            startFragment(FragmentH::class.java, getBundle("frgG ==> frg-Linkage"))
         }
     }
 

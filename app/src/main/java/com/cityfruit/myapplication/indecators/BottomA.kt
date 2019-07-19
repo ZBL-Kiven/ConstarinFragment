@@ -6,6 +6,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.cityfruit.myapplication.R
 import com.cityfruit.myapplication.ToastUtils
+import com.cityfruit.myapplication.addOnClickListener
 import com.cityfruit.myapplication.base_fg.annotations.Container
 import com.cityfruit.myapplication.base_fg.fragments.BaseLinkageFragment
 import com.cityfruit.myapplication.base_fg.managers.BaseFragmentManager
@@ -24,7 +25,7 @@ class BottomA : BaseLinkageFragment() {
 
     override fun initView() {
         container = fragment_container
-        btn01.setOnClickListener {
+        btn01.addOnClickListener {
             container?.visibility = VISIBLE
             startFragmentByNewTask(FragmentD::class.java, null, {
                 ToastUtils.show(context, "it is already last in stack")

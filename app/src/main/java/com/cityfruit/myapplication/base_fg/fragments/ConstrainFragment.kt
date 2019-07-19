@@ -20,7 +20,7 @@ abstract class ConstrainFragment : BaseFragment() {
     open fun onFragmentResult(bundle: Bundle?) {}
 
     open fun finish() {
-        if (!removing) {
+        if (onBack() && !removing) {
             removing = true
             proxy?.finish {
                 rootView?.apply {
@@ -31,6 +31,13 @@ abstract class ConstrainFragment : BaseFragment() {
                 rootView = null
             }
         }
+    }
+
+    /**
+     * it may interrupt or invalidate the finish called
+     * */
+    open fun onBack(): Boolean {
+        return true
     }
 
     protected fun getStackTop(): BaseFragment? {

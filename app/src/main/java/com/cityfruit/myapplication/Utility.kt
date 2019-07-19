@@ -2,6 +2,7 @@ package com.cityfruit.myapplication
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import com.cityfruit.myapplication.base_fg.fragments.BaseFragment
 import com.cityfruit.myapplication.base_fg.log
 import com.cityfruit.myapplication.base_fg.managers.FragmentHelper
