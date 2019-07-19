@@ -2,6 +2,7 @@ package com.cityfruit.myapplication.base_fg.fragments
 
 import android.os.Bundle
 import android.view.ViewGroup
+import com.cityfruit.myapplication.base_fg.log
 import com.cityfruit.myapplication.base_fg.unitive.ProxyManager
 
 @Suppress("unused")
@@ -20,17 +21,23 @@ abstract class ConstrainFragment : BaseFragment() {
     open fun onFragmentResult(bundle: Bundle?) {}
 
     open fun finish() {
+        log(" ----   finish ----- ")
         if (onBack() && !removing) {
             removing = true
-            proxy?.finish {
+            log(" ----   removing ----- ")
+            proxy?.finish { isEmptyStack, clearWhenEmptyStack ->
+                log(" ----   finish proxy empty: $isEmptyStack    cleared: $clearWhenEmptyStack----- ")
+                if (!clearWhenEmptyStack) removing = false
                 rootView?.apply {
-                    if (it && this is ViewGroup) {
+                    if (isEmptyStack && this is ViewGroup) {
+                        log(" ----   removeAllViews ----- ")
                         removeAllViews()
                     }
                 }
                 rootView = null
             }
         }
+        log(" ----   end ----- ")
     }
 
     /**

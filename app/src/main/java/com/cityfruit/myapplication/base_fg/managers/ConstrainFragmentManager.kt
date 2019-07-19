@@ -111,8 +111,8 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
     }
 
     @UiThread
-    fun finishFragment(id: String, onFinished: ((isEmptyStack: Boolean) -> Unit)? = null) {
-        if (stack?.peek()?.id != id) onFinished?.invoke(false); else {
+    fun finishFragment(id: String, onFinished: ((isEmptyStack: Boolean, clearWhenEmptyStack: Boolean) -> Unit)? = null) {
+        if (stack?.peek()?.id != id) onFinished?.invoke(false, true); else {
             stack?.pop()?.let {
                 if (it.isHome || stack.isNullOrEmpty()) {
                     stack?.clear()
@@ -120,18 +120,19 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
                     if (clearWhenEmptyStack()) {
                         clearFragments()
                         FMStore.removeAManager(it.getManagerId())
-                        onFinished?.invoke(true)
+                        onFinished?.invoke(true, true)
                     } else {
                         stack?.push(it)
+                        onFinished?.invoke(false, true)
                     }
                     return
                 }
                 when (it.backMode) {
                     BackMode.ONLY_ONCE -> {
-                        removeFragmentById(it.id) { onFinished?.invoke(false) }
+                        removeFragmentById(it.id) { onFinished?.invoke(false, false) }
                     }
                     BackMode.LASTING -> {
-                        hideFragment(it.id) { onFinished?.invoke(false) }
+                        hideFragment(it.id) { onFinished?.invoke(false, false) }
                     }
                 };syncFrag(true, it.getResultBundle())
             }

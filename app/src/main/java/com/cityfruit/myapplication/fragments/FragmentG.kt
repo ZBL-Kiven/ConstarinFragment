@@ -47,7 +47,9 @@ class FragmentG : ConstrainFragment() {
             startFragment(FragmentB::class.java, getBundle("frgG ==> frgB"))
         }
         a_btn_new_linkage?.addOnClickListener {
-            startFragment(FragmentH::class.java, getBundle("frgG ==> frg-Linkage"))
+            startFragmentByNewTask(FragmentH::class.java, getBundle("frgG ==> frg-Linkage"),{
+                true
+            })
         }
     }
 
