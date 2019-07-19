@@ -175,7 +175,12 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
                 frg.onResume()
                 (fragmentObserver?.beforeHiddenChange(frg, false) { shown() }) ?: shown()
             } else {
-                frg.let { fragmentManager.beginTransaction().add(containId, frg, frg.javaClass.simpleName).show(frg).commit();onShown?.invoke(frg.id) }
+                frg.let { f ->
+                    runInTransaction(null, f) {
+                        it.add(containId, f, f.javaClass.simpleName).show(f)
+                    }
+                    onShown?.invoke(frg.id)
+                }
             }
         } ?: throw NullPointerException("bad call ! ,case : your current shown item was never instanced form data source")
     }
@@ -201,7 +206,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         if (v.isAdded) {
             if (!v.isHidden) (fragmentObserver?.beforeHiddenChange(v, true) { hide(v) }) ?: hide(v)
         } else if (!isRemoved) {
-            fragmentManager.beginTransaction().add(containId, v, v.javaClass.simpleName).hide(v).commit()
+            runInTransaction(null, v) { it.add(containId, v, v.javaClass.simpleName).hide(v) }
         }
     }
 
@@ -213,13 +218,17 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         return true
     }
 
-    private fun runInTransaction(isHidden: Boolean, fragment: F, run: (FragmentTransaction) -> Unit) {
+    /**
+     * running a transaction form manager
+     * @param isHidden it may ignore with null,else it call overridden to set a transaction type
+     * */
+    private fun runInTransaction(isHidden: Boolean?, fragment: F, run: (FragmentTransaction) -> Unit) {
         val transaction = fragmentManager.beginTransaction()
         try {
-            beginTransaction(isHidden, transaction, fragment.javaClass)
+            if (isHidden != null) beginTransaction(isHidden, transaction, fragment.javaClass)
             run(transaction)
         } finally {
-            transaction.commit()
+            transaction.commitNowAllowingStateLoss()
         }
     }
 

@@ -39,7 +39,9 @@ internal object FMStore {
 
             fun removeLinkage(linkage: BaseFragmentManager?) {
                 linkage?.getFragmentIds()?.forEach {
-                    val lfm = managers[managers.remove(it)?.nextId]
+                    val cfm = managers.remove(it)
+                    cfm?.manager?.clearFragments()
+                    val lfm = managers[cfm?.nextId]
                     if (lfm != null) removeAllTopsFromStacks(lfm)
                 }
             }
@@ -51,7 +53,10 @@ internal object FMStore {
                 }
 
                 is ConstrainFragmentManager -> {
-                    managers[nextId]?.let { removeAllTopsFromStacks(it) }
+                    managers[nextId]?.let {
+                        it.manager.clearFragments()
+                        removeAllTopsFromStacks(it)
+                    }
                 }
             }
         }
