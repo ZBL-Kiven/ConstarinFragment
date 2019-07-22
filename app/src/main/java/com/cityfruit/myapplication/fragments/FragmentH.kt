@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.cityfruit.myapplication.R
-import com.cityfruit.myapplication.base_fg.BackMode
-import com.cityfruit.myapplication.base_fg.annotations.Constrain
-import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
-import com.cityfruit.myapplication.base_fg.managers.BaseFragmentManager
+import com.zj.cf.BackMode
+import com.zj.cf.annotations.Constrain
+import com.zj.cf.fragments.ConstrainFragment
+import com.zj.cf.managers.BaseFragmentManager
 import com.cityfruit.myapplication.indecators.BottomB
 import com.cityfruit.myapplication.indecators.BottomC
 import com.cityfruit.myapplication.indecators.BottomD

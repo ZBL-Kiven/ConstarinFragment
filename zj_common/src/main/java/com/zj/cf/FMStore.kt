@@ -1,9 +1,9 @@
-package com.cityfruit.myapplication.base_fg
+package com.zj.cf
 
-import com.cityfruit.myapplication.base_fg.fragments.BaseFragment
-import com.cityfruit.myapplication.base_fg.managers.BaseFragmentManager
-import com.cityfruit.myapplication.base_fg.managers.ConstrainFragmentManager
-import com.cityfruit.myapplication.base_fg.managers.FragmentHelper
+import com.zj.cf.fragments.BaseFragment
+import com.zj.cf.managers.BaseFragmentManager
+import com.zj.cf.managers.ConstrainFragmentManager
+import com.zj.cf.managers.FragmentHelper
 
 internal object FMStore {
 

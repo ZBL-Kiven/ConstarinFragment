@@ -1,14 +1,14 @@
-package com.cityfruit.myapplication.base_fg.managers
+package com.zj.cf.managers
 
 import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.annotation.UiThread
 import android.support.v4.app.FragmentManager
-import com.cityfruit.myapplication.base_fg.*
-import com.cityfruit.myapplication.base_fg.FMStore
-import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
-import com.cityfruit.myapplication.base_fg.getSimpleId
-import com.cityfruit.myapplication.base_fg.unitive.ProxyManager
+import com.zj.cf.*
+import com.zj.cf.FMStore
+import com.zj.cf.fragments.ConstrainFragment
+import com.zj.cf.getSimpleId
+import com.zj.cf.unitive.ProxyManager
 import java.util.*
 
 internal abstract class ConstrainFragmentManager(managerId: String, manager: FragmentManager, @IdRes containerId: Int, val clearWhenEmptyStack: () -> Boolean) : FragmentHelper<ConstrainFragment>(managerId, manager, containerId) {

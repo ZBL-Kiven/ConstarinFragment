@@ -1,17 +1,17 @@
 @file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
-package com.cityfruit.myapplication.base_fg.managers
+package com.zj.cf.managers
 
 import android.support.annotation.UiThread
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
-import com.cityfruit.myapplication.base_fg.FMStore
-import com.cityfruit.myapplication.base_fg.fragments.BaseFragment
-import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
-import com.cityfruit.myapplication.base_fg.log
-import com.cityfruit.myapplication.base_fg.unitive.FragmentObserver
-import com.cityfruit.myapplication.base_fg.unitive.FragmentOperator
+import com.zj.cf.FMStore
+import com.zj.cf.fragments.BaseFragment
+import com.zj.cf.fragments.ConstrainFragment
+import com.zj.cf.log
+import com.zj.cf.unitive.FragmentObserver
+import com.zj.cf.unitive.FragmentOperator
 import java.util.*
 import java.lang.NullPointerException
 
@@ -171,13 +171,13 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
                 runInTransaction(true, frg) { it.show(frg) }
                 onShown?.invoke(frg.id)
             }
-            if (frg.isAdded) {
+            if (frg.isExists()) {
                 frg.onResume()
                 (fragmentObserver?.beforeHiddenChange(frg, false) { shown() }) ?: shown()
             } else {
                 frg.let { f ->
                     runInTransaction(null, f) {
-                        it.add(containId, f, f.javaClass.simpleName).show(f)
+                        it.add(containId, f, f.id).show(f)
                     }
                     onShown?.invoke(frg.id)
                 }
@@ -203,10 +203,10 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         if (v == null) {
             onHidden?.invoke();return
         }
-        if (v.isAdded) {
+        if (v.isExists()) {
             if (!v.isHidden) (fragmentObserver?.beforeHiddenChange(v, true) { hide(v) }) ?: hide(v)
         } else if (!isRemoved) {
-            runInTransaction(null, v) { it.add(containId, v, v.javaClass.simpleName).hide(v) }
+            runInTransaction(null, v) { it.add(containId, v, v.id).hide(v) }
         }
     }
 
@@ -216,6 +216,10 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
     override fun whenShowNotSameFragment(shownId: String): Boolean {
         return true
+    }
+
+    private fun F.isExists(): Boolean {
+        return isAdded || fragmentManager?.findFragmentByTag(id) != null
     }
 
     /**

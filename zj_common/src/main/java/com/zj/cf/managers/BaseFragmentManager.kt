@@ -1,17 +1,17 @@
 @file:Suppress("unused")
 
-package com.cityfruit.myapplication.base_fg.managers
+package com.zj.cf.managers
 
 import android.support.annotation.IdRes
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentTransaction
 import android.view.View
 import android.view.ViewGroup
-import com.cityfruit.myapplication.base_fg.FMStore
-import com.cityfruit.myapplication.base_fg.annotations.*
-import com.cityfruit.myapplication.base_fg.annotations.parser.AnnotationParser
-import com.cityfruit.myapplication.base_fg.fragments.BaseFragment
-import com.cityfruit.myapplication.base_fg.fragments.BaseLinkageFragment
+import com.zj.cf.FMStore
+import com.zj.cf.annotations.*
+import com.zj.cf.annotations.parser.AnnotationParser
+import com.zj.cf.fragments.BaseFragment
+import com.zj.cf.fragments.BaseLinkageFragment
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import java.lang.NullPointerException

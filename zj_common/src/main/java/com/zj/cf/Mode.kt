@@ -1,11 +1,11 @@
-package com.cityfruit.myapplication.base_fg
+package com.zj.cf
 
 import android.util.Log
-import com.cityfruit.myapplication.base_fg.BackMode.LASTING
-import com.cityfruit.myapplication.base_fg.BackMode.ONLY_ONCE
-import com.cityfruit.myapplication.base_fg.LaunchMode.CLEAR_BACK_STACK
-import com.cityfruit.myapplication.base_fg.LaunchMode.FOLLOW
-import com.cityfruit.myapplication.base_fg.LaunchMode.STACK
+import com.zj.cf.BackMode.LASTING
+import com.zj.cf.BackMode.ONLY_ONCE
+import com.zj.cf.LaunchMode.CLEAR_BACK_STACK
+import com.zj.cf.LaunchMode.FOLLOW
+import com.zj.cf.LaunchMode.STACK
 
 /**
  * created by zjj on 19.05.14

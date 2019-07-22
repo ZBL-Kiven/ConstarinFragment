@@ -3,8 +3,8 @@ package com.cityfruit.myapplication
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
-import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
-import com.cityfruit.myapplication.base_fg.managers.BaseFragmentManager
+import com.zj.cf.fragments.ConstrainFragment
+import com.zj.cf.managers.BaseFragmentManager
 import com.cityfruit.myapplication.indecators.BottomA
 import com.cityfruit.myapplication.indecators.BottomB
 import com.cityfruit.myapplication.indecators.BottomC
@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
     val txt = "the top of stack : %s"
 
-    var manager: BaseFragmentManager? = null
+    var manager:BaseFragmentManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

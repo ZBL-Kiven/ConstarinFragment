@@ -1,21 +1,19 @@
 @file:Suppress("unused")
 
-package com.cityfruit.myapplication.base_fg
+package com.zj.cf
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.view.ViewGroup
-import com.cityfruit.myapplication.base_fg.annotations.parser.AnnotationParser
-import com.cityfruit.myapplication.base_fg.annotations.parser.ConstrainFragmentAnnotationParser
-import com.cityfruit.myapplication.base_fg.annotations.Container
-import com.cityfruit.myapplication.base_fg.fragments.BaseFragment
-import com.cityfruit.myapplication.base_fg.fragments.BaseLinkageFragment
-import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
-import com.cityfruit.myapplication.base_fg.managers.ConstrainFragmentManager
+import com.zj.cf.annotations.parser.AnnotationParser
+import com.zj.cf.annotations.parser.ConstrainFragmentAnnotationParser
+import com.zj.cf.annotations.Container
+import com.zj.cf.fragments.BaseFragment
+import com.zj.cf.fragments.BaseLinkageFragment
+import com.zj.cf.fragments.ConstrainFragment
+import com.zj.cf.managers.ConstrainFragmentManager
 import java.security.InvalidParameterException
 
 @Throws(InvalidParameterException::class, NullPointerException::class)

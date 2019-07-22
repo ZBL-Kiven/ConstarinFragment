@@ -1,11 +1,11 @@
-package com.cityfruit.myapplication.base_fg.unitive
+package com.zj.cf.unitive
 
 import android.os.Bundle
-import com.cityfruit.myapplication.base_fg.annotations.parser.ConstrainFragmentAnnotationParser
-import com.cityfruit.myapplication.base_fg.fragments.BaseFragment
-import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
-import com.cityfruit.myapplication.base_fg.getSimpleId
-import com.cityfruit.myapplication.base_fg.managers.ConstrainFragmentManager
+import com.zj.cf.annotations.parser.ConstrainFragmentAnnotationParser
+import com.zj.cf.fragments.BaseFragment
+import com.zj.cf.fragments.ConstrainFragment
+import com.zj.cf.getSimpleId
+import com.zj.cf.managers.ConstrainFragmentManager
 
 data class ProxyManager<T : ConstrainFragment>(internal val mFragmentClass: Class<T>, val id: String, val backMode: Int, val launchMode: Int, val isHome: Boolean, val bundle: Bundle?) {
 

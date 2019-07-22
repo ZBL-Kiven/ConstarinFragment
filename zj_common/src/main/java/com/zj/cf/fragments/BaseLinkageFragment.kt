@@ -1,4 +1,4 @@
-package com.cityfruit.myapplication.base_fg.fragments
+package com.zj.cf.fragments
 
 import android.view.View
 

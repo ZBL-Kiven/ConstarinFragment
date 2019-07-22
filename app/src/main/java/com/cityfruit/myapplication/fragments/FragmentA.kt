@@ -7,14 +7,13 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.cityfruit.myapplication.R
 import com.cityfruit.myapplication.addOnClickListener
-import com.cityfruit.myapplication.base_fg.BackMode
-import com.cityfruit.myapplication.base_fg.annotations.Constrain
-import com.cityfruit.myapplication.base_fg.annotations.Container
-import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
-import com.cityfruit.myapplication.base_fg.startFragmentByNewTask
+import com.zj.cf.BackMode
+import com.zj.cf.annotations.Constrain
+import com.zj.cf.annotations.Container
+import com.zj.cf.fragments.ConstrainFragment
+import com.zj.cf.startFragmentByNewTask
 import com.cityfruit.myapplication.getBundle
 import kotlinx.android.synthetic.main.fragment_a.*
-import kotlinx.android.synthetic.main.fragment_a.fragment_container
 
 @Constrain(id = "FragmentA", backMode = BackMode.ONLY_ONCE)
 class FragmentA : ConstrainFragment() {

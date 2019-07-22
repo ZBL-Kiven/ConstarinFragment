@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.cityfruit.myapplication.R
 import com.cityfruit.myapplication.ToastUtils
-import com.cityfruit.myapplication.base_fg.annotations.Container
-import com.cityfruit.myapplication.base_fg.fragments.BaseLinkageFragment
-import com.cityfruit.myapplication.base_fg.startFragmentByNewTask
+import com.zj.cf.annotations.Container
+import com.zj.cf.fragments.BaseLinkageFragment
+import com.zj.cf.startFragmentByNewTask
 import com.cityfruit.myapplication.fragments.FragmentA
 import com.cityfruit.myapplication.getBundle
 import kotlinx.android.synthetic.main.bottom.*

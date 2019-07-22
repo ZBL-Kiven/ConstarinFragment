@@ -1,7 +1,7 @@
-package com.cityfruit.myapplication.base_fg.unitive
+package com.zj.cf.unitive
 
 import android.support.v4.app.FragmentTransaction
-import com.cityfruit.myapplication.base_fg.fragments.BaseFragment
+import com.zj.cf.fragments.BaseFragment
 
 /**
  * Created by zjj on 19.05.14.

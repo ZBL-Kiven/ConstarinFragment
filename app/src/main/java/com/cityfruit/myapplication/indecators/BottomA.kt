@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import com.cityfruit.myapplication.R
 import com.cityfruit.myapplication.ToastUtils
 import com.cityfruit.myapplication.addOnClickListener
-import com.cityfruit.myapplication.base_fg.annotations.Container
-import com.cityfruit.myapplication.base_fg.fragments.BaseLinkageFragment
-import com.cityfruit.myapplication.base_fg.managers.BaseFragmentManager
-import com.cityfruit.myapplication.base_fg.startFragmentByNewTask
+import com.zj.cf.annotations.Container
+import com.zj.cf.fragments.BaseLinkageFragment
+import com.zj.cf.managers.BaseFragmentManager
+import com.zj.cf.startFragmentByNewTask
 import com.cityfruit.myapplication.fragments.FragmentD
 import kotlinx.android.synthetic.main.fragment_b.*
 
@@ -35,7 +35,7 @@ class BottomA : BaseLinkageFragment() {
     }
 
     override fun initData() {
-        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, BottomB(), BottomC(), BottomD()) {
+        object :BaseFragmentManager(this, R.id.fragment_container, 0, ll, BottomB(), BottomC(), BottomD()) {
 
         }
     }

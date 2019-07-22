@@ -1,4 +1,4 @@
-package com.cityfruit.myapplication.base_fg.annotations;
+package com.zj.cf.annotations;
 
 import java.lang.annotation.*;
 

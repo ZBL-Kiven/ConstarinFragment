@@ -1,6 +1,6 @@
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package com.cityfruit.myapplication.base_fg.fragments
+package com.zj.cf.fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -33,6 +33,10 @@ abstract class BaseFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initData()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+
     }
 
     protected abstract fun getView(inflater: LayoutInflater, container: ViewGroup?): View

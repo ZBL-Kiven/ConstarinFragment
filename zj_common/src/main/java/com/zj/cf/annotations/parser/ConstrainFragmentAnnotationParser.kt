@@ -1,15 +1,15 @@
-package com.cityfruit.myapplication.base_fg.annotations.parser
+package com.zj.cf.annotations.parser
 
 import android.os.Bundle
-import com.cityfruit.myapplication.base_fg.BackMode
-import com.cityfruit.myapplication.base_fg.LaunchMode.FOLLOW
-import com.cityfruit.myapplication.base_fg.annotations.Constrain
-import com.cityfruit.myapplication.base_fg.annotations.ConstrainHome
-import com.cityfruit.myapplication.base_fg.annotations.LaunchMode
-import com.cityfruit.myapplication.base_fg.fragments.ConstrainFragment
-import com.cityfruit.myapplication.base_fg.managers.ConstrainFragmentManager
-import com.cityfruit.myapplication.base_fg.generateId
-import com.cityfruit.myapplication.base_fg.unitive.ProxyManager
+import com.zj.cf.BackMode
+import com.zj.cf.LaunchMode.FOLLOW
+import com.zj.cf.annotations.Constrain
+import com.zj.cf.annotations.ConstrainHome
+import com.zj.cf.annotations.LaunchMode
+import com.zj.cf.fragments.ConstrainFragment
+import com.zj.cf.managers.ConstrainFragmentManager
+import com.zj.cf.generateId
+import com.zj.cf.unitive.ProxyManager
 
 internal object ConstrainFragmentAnnotationParser {
 

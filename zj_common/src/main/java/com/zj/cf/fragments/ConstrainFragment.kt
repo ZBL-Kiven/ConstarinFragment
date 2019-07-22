@@ -1,9 +1,9 @@
-package com.cityfruit.myapplication.base_fg.fragments
+package com.zj.cf.fragments
 
 import android.os.Bundle
 import android.view.ViewGroup
-import com.cityfruit.myapplication.base_fg.log
-import com.cityfruit.myapplication.base_fg.unitive.ProxyManager
+import com.zj.cf.log
+import com.zj.cf.unitive.ProxyManager
 
 @Suppress("unused")
 abstract class ConstrainFragment : BaseFragment() {
