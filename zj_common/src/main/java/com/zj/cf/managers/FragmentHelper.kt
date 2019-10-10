@@ -172,7 +172,6 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
                 onShown?.invoke(frg.id)
             }
             if (frg.isExists()) {
-                frg.onResume()
                 (fragmentObserver?.beforeHiddenChange(frg, false) { shown() }) ?: shown()
             } else {
                 frg.let { f ->
@@ -193,9 +192,8 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
     private fun hideFragment(v: F?, isRemoved: Boolean, onHidden: (() -> Unit)? = null) {
         fun hide(v: F) {
-            if (v.isResumed) {
-                v.onPause()
-                v.onStop()
+            if (v.isResume || isRemoved) {
+                if (isRemoved) v.onFragmentDestroy()
             }
             runInTransaction(true, v) { it.hide(v);onHidden?.invoke() }
         }
@@ -237,8 +235,8 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     }
 
     internal fun clearFragments() {
-        mFragments.clear()
         hideFragments(true) { _, _ -> return@hideFragments true }
+        mFragments.clear()
         fragmentManager.popBackStack()
     }
 }

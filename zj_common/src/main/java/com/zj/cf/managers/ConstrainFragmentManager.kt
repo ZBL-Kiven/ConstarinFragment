@@ -10,6 +10,7 @@ import com.zj.cf.fragments.ConstrainFragment
 import com.zj.cf.getSimpleId
 import com.zj.cf.unitive.ProxyManager
 import java.util.*
+import kotlin.math.max
 
 internal abstract class ConstrainFragmentManager(managerId: String, manager: FragmentManager, @IdRes containerId: Int, val clearWhenEmptyStack: () -> Boolean) : FragmentHelper<ConstrainFragment>(managerId, manager, containerId) {
 
@@ -66,7 +67,7 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
             if (firstStackIndex == -1) {
                 stack?.push(proxy)
             } else {
-                val maxIndex = Math.max(firstStackIndex, stack?.lastIndex ?: 0)
+                val maxIndex = max(firstStackIndex, stack?.lastIndex ?: 0)
                 if (maxIndex == firstStackIndex) {
                     stack?.removeAllElements();stack?.push(proxy)
                 } else {

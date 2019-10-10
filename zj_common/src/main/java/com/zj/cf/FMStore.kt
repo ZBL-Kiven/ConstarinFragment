@@ -110,12 +110,12 @@ internal object FMStore {
             val pid = if (manage?.manager is BaseFragmentManager) managers[manage.manager.managerId]?.pId
             else manage?.pId
             val lastFrag = managers[pid] ?: return false
-            return when (lastFrag.manager) {
+            return when (val lastFragmentManager = lastFrag.manager) {
                 is BaseFragmentManager -> {
                     findLastConstrainOrNull(pid)
                 }
                 is ConstrainFragmentManager -> {
-                    val cf = lastFrag.manager.getCurrentFragment()
+                    val cf = lastFragmentManager.getCurrentFragment()
                     if (manage?.manager is BaseFragmentManager) cf?.finish()
                     return true
                 }
