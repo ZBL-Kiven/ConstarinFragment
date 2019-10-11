@@ -56,7 +56,7 @@ abstract class BaseFragment : Fragment() {
         return rootView
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         curLifeState = Lifecycle.CREATE
         onHiddenChanged(isHidden)
