@@ -13,7 +13,8 @@ import com.cityfruit.myapplication.fragments.FragmentA
 import com.cityfruit.myapplication.getBundle
 import kotlinx.android.synthetic.main.bottom.*
 
-class BottomC : BaseLinkageFragment() {
+class TabC : BaseLinkageFragment() {
+
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.bottom, container, false)
     }
@@ -24,9 +25,10 @@ class BottomC : BaseLinkageFragment() {
     override fun onCreate() {
         super.onCreate()
         container = bottom_fl
-        startFragmentByNewTask(FragmentA::class.java, getBundle("bottomC 启动了 FrgA"), {
+        startFragmentByNewTask(FragmentA::class.java, getBundle("bottomD 启动了 FrgA"), {
             ToastUtils.show(context, "it is already last in stack")
             false
         })
     }
+
 }

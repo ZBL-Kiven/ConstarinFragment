@@ -13,7 +13,7 @@ import com.cityfruit.myapplication.fragments.FragmentA
 import com.cityfruit.myapplication.getBundle
 import kotlinx.android.synthetic.main.bottom.*
 
-class BottomC : BaseLinkageFragment() {
+class TabB : BaseLinkageFragment() {
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.bottom, container, false)
     }

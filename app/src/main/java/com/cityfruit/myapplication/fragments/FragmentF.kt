@@ -33,7 +33,8 @@ class FragmentF : ConstrainFragment() {
         printBundle(bundle, false)
     }
 
-    override fun initView() {
+    override fun onCreate() {
+        super.onCreate()
         frgContainer = fragment_container
         a_btn_new_task?.addOnClickListener {
             startFragmentByNewTask(FragmentG::class.java, getBundle("frgF ==> frgG by new Task"), {
@@ -53,9 +54,6 @@ class FragmentF : ConstrainFragment() {
                 true
             })
         }
-    }
-
-    override fun initData() {
         val text = javaClass.simpleName
         txt?.text = text
         bg?.setBackgroundColor(activity?.getColor(R.color.c6) ?: Color.BLACK)

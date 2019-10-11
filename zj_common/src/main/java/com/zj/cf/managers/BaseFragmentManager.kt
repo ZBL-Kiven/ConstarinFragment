@@ -112,19 +112,15 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
         }
         clickTime = System.currentTimeMillis()
         showFragment(curItem)
-        initViews()
-    }
-
-    fun selectedFragment(id: String) {
-        getFragmentById(id)?.linkageView?.callOnClick()
-    }
-
-    private fun initViews() {
         getFragments()?.forEach { frg ->
             frg.linkageView?.setOnClickListener {
                 showFragment(frg.id)
             }
         }
+    }
+
+    fun selectedFragment(id: String) {
+        getFragmentById(id)?.linkageView?.callOnClick()
     }
 
     override fun beginTransaction(isHidden: Boolean, transaction: FragmentTransaction, frgCls: Class<BaseLinkageFragment>) {

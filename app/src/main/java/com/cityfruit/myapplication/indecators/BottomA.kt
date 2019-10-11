@@ -23,7 +23,8 @@ class BottomA : BaseLinkageFragment() {
         return inflater.inflate(R.layout.fragment_b, container, false)
     }
 
-    override fun initView() {
+    override fun onCreate() {
+        super.onCreate()
         container = fragment_container
         btn01.addOnClickListener {
             container?.visibility = VISIBLE
@@ -32,10 +33,7 @@ class BottomA : BaseLinkageFragment() {
                 false
             })
         }
-    }
-
-    override fun initData() {
-        object :BaseFragmentManager(this, R.id.fragment_container, 0, ll, BottomB(), BottomC(), BottomD()) {
+        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, TabA(), TabB(), TabC()) {
 
         }
     }

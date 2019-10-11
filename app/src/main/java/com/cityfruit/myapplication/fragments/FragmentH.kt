@@ -9,9 +9,9 @@ import com.zj.cf.BackMode
 import com.zj.cf.annotations.Constrain
 import com.zj.cf.fragments.ConstrainFragment
 import com.zj.cf.managers.BaseFragmentManager
-import com.cityfruit.myapplication.indecators.BottomB
-import com.cityfruit.myapplication.indecators.BottomC
-import com.cityfruit.myapplication.indecators.BottomD
+import com.cityfruit.myapplication.indecators.TabA
+import com.cityfruit.myapplication.indecators.TabB
+import com.cityfruit.myapplication.indecators.TabC
 import kotlinx.android.synthetic.main.fragment_b.*
 import kotlin.random.Random
 
@@ -22,13 +22,11 @@ class FragmentH : ConstrainFragment() {
         return inflater.inflate(R.layout.fragment_b, container, false)
     }
 
-    override fun initView() {
-        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, BottomB(), BottomC(), BottomD()) {
+    override fun onCreate() {
+        super.onCreate()
+        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, TabA(), TabB(), TabC()) {
 
         }
-    }
-
-    override fun initData() {
         val color = randomColor()
         ll?.setBackgroundColor(color)
     }

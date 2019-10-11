@@ -25,7 +25,8 @@ class FragmentA : ConstrainFragment() {
         return inflater.inflate(R.layout.fragment_a, container, false)
     }
 
-    override fun initView() {
+    override fun onCreate() {
+        super.onCreate()
         frgContainer = fragment_container
         a_btn_new_task?.addOnClickListener {
             startFragmentByNewTask(FragmentB::class.java, getBundle("frgA ==> frgB by new Task"), {
@@ -46,9 +47,6 @@ class FragmentA : ConstrainFragment() {
                 true
             })
         }
-    }
-
-    override fun initData() {
         val text = javaClass.simpleName
         txt?.text = text
         bg?.setBackgroundColor(activity?.getColor(R.color.c1) ?: Color.BLACK)
