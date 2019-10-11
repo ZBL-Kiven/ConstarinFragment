@@ -229,9 +229,9 @@ abstract class BaseFragment : Fragment() {
         log("onDestroyed  -- ${this.javaClass.simpleName}${this.hashCode()}  isHidden  = $isHidden  id =  $id")
     }
 
-    /**
-     * use the custom curLifecycleState and disable the region func
-     * */
+    final override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
     final override fun onStart() {
         super.onStart()
