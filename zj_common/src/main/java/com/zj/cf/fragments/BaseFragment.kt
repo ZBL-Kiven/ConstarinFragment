@@ -185,10 +185,16 @@ abstract class BaseFragment : Fragment() {
     }
 
     internal fun onFragmentDestroy() {
-        if (!isStop) {
-            performStop()
-        }
+        performPause()
+        performStop()
         onDestroyed()
+    }
+
+    internal fun onFragmentResumed() {
+        if (isStop) {
+            onReStart()
+        }
+        onResumed()
     }
 
     @CallSuper

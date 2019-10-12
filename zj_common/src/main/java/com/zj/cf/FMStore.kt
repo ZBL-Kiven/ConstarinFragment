@@ -68,7 +68,24 @@ internal object FMStore {
             }
             removeAllTopsFromStacks(curFinishingFrg)
         }
-        log("${managers.size}")
+    }
+
+    fun getManagerByLevel(managerId: String?, level: Int): FragmentHelper<*>? {
+        if (managers.contains(managerId)) {
+            var curFinishingFrg: ManagerInfo<*>? = managers[managerId] ?: return null
+            for (i in when {
+                level > 0 -> 0 until level
+                level < 0 -> level until 0
+                else -> 0..0
+            }) {
+                val id = if (i > 0) curFinishingFrg?.nextId else curFinishingFrg?.pId
+                if ((i > 0 && i == level - 1) || (i < 0 && i == -1)) {
+                    return managers[id]?.manager
+                }
+                curFinishingFrg = managers[id] ?: return null
+            }
+        }
+        return null
     }
 
     /**

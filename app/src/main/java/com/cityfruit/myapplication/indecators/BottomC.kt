@@ -11,6 +11,7 @@ import com.zj.cf.fragments.BaseLinkageFragment
 import com.zj.cf.startFragmentByNewTask
 import com.cityfruit.myapplication.fragments.FragmentA
 import com.cityfruit.myapplication.getBundle
+import com.zj.cf.log
 import kotlinx.android.synthetic.main.bottom.*
 
 class BottomC : BaseLinkageFragment() {
@@ -24,9 +25,17 @@ class BottomC : BaseLinkageFragment() {
     override fun onCreate() {
         super.onCreate()
         container = bottom_fl
+
+        container?.setOnClickListener {
+            initData()
+        }
+        initData()
+    }
+
+    private fun initData() {
         startFragmentByNewTask(FragmentA::class.java, getBundle("bottomC 启动了 FrgA"), {
-            ToastUtils.show(context, "it is already last in stack")
-            false
+            log("----- stack is empty")
+            true
         })
     }
 }
