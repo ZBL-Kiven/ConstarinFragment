@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.zj.cf.log
 import java.util.*
 
 /**
@@ -199,40 +198,33 @@ abstract class BaseFragment : Fragment() {
 
     @CallSuper
     protected open fun onCreate() {
-        log("onCreate  -- ${this.javaClass.simpleName}${this.hashCode()}  isHidden  = $isHidden  id =  $id")
     }
 
     protected open fun onStarted() {
-        log("onStarted  -- ${this.javaClass.simpleName}${this.hashCode()}  isHidden  = $isHidden  id =  $id")
     }
 
     @CallSuper
     protected open fun onReStart() {
-        log("onReStart  -- ${this.javaClass.simpleName}${this.hashCode()}  isHidden  = $isHidden  id =  $id")
     }
 
     @CallSuper
     protected open fun onResumed() {
         enableRoot(true)
-        log("onResumed  -- ${this.javaClass.simpleName}${this.hashCode()}  isHidden  = $isHidden  id =  $id")
     }
 
     @CallSuper
     protected open fun onPaused() {
         enableRoot(false)
-        log("onPaused  -- ${this.javaClass.simpleName}${this.hashCode()}  isHidden  = $isHidden  id =  $id")
     }
 
     @CallSuper
     protected open fun onStopped() {
-        log("onStopped  -- ${this.javaClass.simpleName}${this.hashCode()}  isHidden  = $isHidden  id =  $id")
     }
 
     @CallSuper
     protected open fun onDestroyed() {
         curLifeState = Lifecycle.DESTROY
         rootView = null
-        log("onDestroyed  -- ${this.javaClass.simpleName}${this.hashCode()}  isHidden  = $isHidden  id =  $id")
     }
 
     final override fun onCreate(savedInstanceState: Bundle?) {

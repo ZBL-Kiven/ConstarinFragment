@@ -2,11 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 28
-
+    compileSdkVersion compile_sdk_version as int
     defaultConfig {
-        minSdkVersion 24
-        targetSdkVersion 28
+        minSdkVersion min_sdk_version as int
+        targetSdkVersion target_sdk_version as int
         versionCode 1
         versionName "1.0"
     }
@@ -24,3 +23,5 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:28.0.0'
 }
+
+apply from: 'upload.gradle'

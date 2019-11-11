@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentTransaction
 import com.zj.cf.FMStore
 import com.zj.cf.fragments.BaseFragment
 import com.zj.cf.fragments.ConstrainFragment
-import com.zj.cf.log
 import com.zj.cf.unitive.FragmentObserver
 import com.zj.cf.unitive.FragmentOperator
 import java.util.*
@@ -103,7 +102,6 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
     @UiThread
     fun removeFragmentById(id: String, onRemoved: (() -> Unit)? = null) {
-        log("removeFragmentById : $id")
         fun remove(frg: F) {
             runInTransaction(true, frg) {
                 it.remove(frg)

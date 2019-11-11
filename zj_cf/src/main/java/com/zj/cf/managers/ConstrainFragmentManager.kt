@@ -44,7 +44,6 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
                     }
                     it.push(current)
                 }
-                printStack()
             }
         }
     }
@@ -87,7 +86,6 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
             LaunchMode.FOLLOW -> follow(proxy)
             LaunchMode.CLEAR_BACK_STACK -> clearStack(proxy)
         }
-        printStack()
         syncFrag(false, null)
     }
 
@@ -98,13 +96,13 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
                     var frg = getFragmentById(it.id)
                     if (frg == null) {
                         frg = it.mFragmentClass.newInstance()
-                        frg?.setProxy(it)
-                        if (isBack) frg?.onPostValue(it.bundle)
+                        frg.setProxy(it)
+                        if (isBack) frg.onPostValue(it.bundle)
                         addFragment(frg)
                     } else {
                         frg.setProxy(it)
                     }
-                    if (isBack) frg?.onFragmentResult(bundle) else frg?.onPostValue(it.bundle)
+                    if (isBack) frg.onFragmentResult(bundle) else frg.onPostValue(it.bundle)
                     showFragment(it.id)
                 }
             }
@@ -141,7 +139,6 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
                     }
                 };syncFrag(true, it.getResultBundle())
             }
-            printStack()
         }
     }
 
@@ -154,11 +151,5 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
             }
             stack?.push(cur)
         }
-        printStack()
-    }
-
-    private fun printStack() {
-        val print = stack?.map { getSimpleId(it.id).first }?.asSequence()?.joinToString()
-        log("the cur stack data is : $print")
     }
 }

@@ -1,6 +1,5 @@
 package com.zj.cf
 
-import android.util.Log
 import com.zj.cf.BackMode.LASTING
 import com.zj.cf.BackMode.ONLY_ONCE
 import com.zj.cf.LaunchMode.CLEAR_BACK_STACK
@@ -36,9 +35,5 @@ object LaunchMode {
 object BackMode {
     const val ONLY_ONCE = 1
     const val LASTING = 2
-}
-
-fun log(s: String) {
-    Log.e("----- ", s)
 }
 

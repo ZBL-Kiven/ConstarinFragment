@@ -5,11 +5,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion compile_sdk_version as int
     defaultConfig {
-        applicationId "com.cityfruit.myapplication"
-        minSdkVersion 24
-        targetSdkVersion 28
+        minSdkVersion min_sdk_version as int
+        targetSdkVersion target_sdk_version as int
+        applicationId "com.zj.cf"
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -27,5 +27,5 @@ dependencies {
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation project(path: ':zj_common')
+    implementation project(path: ':zj_cf')
 }
