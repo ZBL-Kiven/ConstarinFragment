@@ -28,7 +28,7 @@ object LaunchMode {
  *
  * the lifecycle with fragment
  *
- * @property ONLY_ONCE this fragment only created when used , and'll destroyed when close
+ * @property ONLY_ONCE the fragment has created only by used , and it'll destroy when close
  *
  * @property LASTING if the manager is running or activity was living , the fragment will exists in long at stack
  * */

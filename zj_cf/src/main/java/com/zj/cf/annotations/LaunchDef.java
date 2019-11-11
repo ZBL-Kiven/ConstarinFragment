@@ -14,7 +14,7 @@ import static com.zj.cf.LaunchMode.STACK;
 /**
  * created by zjj on 19.05.14
  *
- * @see LaunchMode ,the start mode.
+ * @see com.zj.cf.LaunchMode ,the start mode.
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.METHOD)
