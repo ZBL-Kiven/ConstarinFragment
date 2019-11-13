@@ -1,9 +1,9 @@
 package com.zj.cf.managers
 
 import android.os.Bundle
-import android.support.annotation.IdRes
-import android.support.annotation.UiThread
-import android.support.v4.app.FragmentManager
+import androidx.annotation.IdRes
+import androidx.annotation.UiThread
+import androidx.fragment.app.FragmentManager
 import com.zj.cf.*
 import com.zj.cf.FMStore
 import com.zj.cf.fragments.ConstrainFragment

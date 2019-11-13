@@ -1,6 +1,6 @@
 package com.zj.cf.unitive
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 
 /**
  * Created by zjj on 19.05.14.

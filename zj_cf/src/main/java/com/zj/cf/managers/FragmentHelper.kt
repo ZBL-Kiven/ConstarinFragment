@@ -2,10 +2,10 @@
 
 package com.zj.cf.managers
 
-import android.support.annotation.UiThread
-import android.support.v4.app.FragmentActivity
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
+import androidx.annotation.UiThread
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.zj.cf.FMStore
 import com.zj.cf.fragments.BaseFragment
 import com.zj.cf.fragments.ConstrainFragment

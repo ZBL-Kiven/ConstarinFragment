@@ -1,6 +1,6 @@
 package com.cityfruit.myapplication
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
 import com.cityfruit.myapplication.indecators.*
@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
 
     val txt = "the top of stack : %s"
 
-    var manager: BaseFragmentManager? = null
+    private var manager: BaseFragmentManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,6 +1,7 @@
 package com.cityfruit.myapplication
 
 import android.view.View
+import kotlin.math.abs
 
 
 fun View.addOnClickListener(clickTime: Long = 300L, l: (View) -> Unit) {
@@ -16,7 +17,7 @@ private var lastClickTime: Long = 0
 private fun isFastDoubleClick(diff: Long): Boolean {
     val time = System.currentTimeMillis()
     val timeD = time - lastClickTime
-    val isDoubleClick = (Math.abs(timeD) < diff)
+    val isDoubleClick = (abs(timeD) < diff)
     if (isDoubleClick && lastClickTime > 0) {
         return true
     }

@@ -2,9 +2,9 @@
 
 package com.zj.cf.managers
 
-import android.support.annotation.IdRes
-import android.support.v4.app.FragmentActivity
-import android.support.v4.app.FragmentTransaction
+import androidx.annotation.IdRes
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentTransaction
 import android.view.View
 import android.view.ViewGroup
 import com.zj.cf.FMStore
