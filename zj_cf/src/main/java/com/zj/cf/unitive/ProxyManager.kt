@@ -1,10 +1,10 @@
 package com.zj.cf.unitive
 
 import android.os.Bundle
+import com.zj.cf.FMStore.getSimpleId
 import com.zj.cf.annotations.parser.ConstrainFragmentAnnotationParser
 import com.zj.cf.fragments.BaseFragment
 import com.zj.cf.fragments.ConstrainFragment
-import com.zj.cf.getSimpleId
 import com.zj.cf.managers.ConstrainFragmentManager
 
 data class ProxyManager<T : ConstrainFragment>(internal val mFragmentClass: Class<T>, val id: String, val backMode: Int, val launchMode: Int, val isHome: Boolean, val bundle: Bundle?) {

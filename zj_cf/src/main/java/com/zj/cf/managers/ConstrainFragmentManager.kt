@@ -6,8 +6,8 @@ import androidx.annotation.UiThread
 import androidx.fragment.app.FragmentManager
 import com.zj.cf.*
 import com.zj.cf.FMStore
+import com.zj.cf.FMStore.getSimpleId
 import com.zj.cf.fragments.ConstrainFragment
-import com.zj.cf.getSimpleId
 import com.zj.cf.unitive.ProxyManager
 import java.util.*
 import kotlin.math.max
