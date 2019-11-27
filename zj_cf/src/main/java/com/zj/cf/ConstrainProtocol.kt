@@ -23,7 +23,7 @@ fun <T : ConstrainFragment> FragmentActivity.startFragment(fragmentCls: Class<T>
 
 @Throws(InvalidParameterException::class, NullPointerException::class)
 fun <T : ConstrainFragment> BaseFragment.startFragmentByNewTask(fragmentCls: Class<T>, bundle: Bundle? = null, clearWhenEmptyStack: () -> Boolean, overrideTransaction: ((isHidden: Boolean, transaction: FragmentTransaction, curFragCls: Class<ConstrainFragment>) -> FragmentTransaction)? = null) {
-    val pid = if (this is BaseLinkageFragment) id else managerId
+    val pid = if (this is BaseLinkageFragment) fId else managerId
     startFrag(pid, this, javaClass, childFragmentManager, fragmentCls, bundle, clearWhenEmptyStack, overrideTransaction)
 }
 
@@ -35,7 +35,7 @@ fun <T : ConstrainFragment> FragmentActivity.startFragment(fragmentCls: Class<T>
 
 @Throws(InvalidParameterException::class, NullPointerException::class)
 fun <T : ConstrainFragment> BaseFragment.startFragmentByNewTask(fragmentCls: Class<T>, container: ViewGroup, bundle: Bundle? = null, clearWhenEmptyStack: () -> Boolean, overrideTransaction: ((isHidden: Boolean, transaction: FragmentTransaction, curFragCls: Class<ConstrainFragment>) -> FragmentTransaction)? = null) {
-    val pid = if (this is BaseLinkageFragment) id else managerId
+    val pid = if (this is BaseLinkageFragment) fId else managerId
     startFrag(pid, container, childFragmentManager, fragmentCls, bundle, clearWhenEmptyStack, overrideTransaction)
 }
 

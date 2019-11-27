@@ -10,9 +10,9 @@ abstract class ConstrainFragment : BaseFragment() {
     /* only validate in ConstrainFragmentManager **/
     private var proxy: ProxyManager<*>? = null
 
-    override val id: String
+    final override val fId: String
         get() {
-            return proxy?.id ?: super.id
+            return proxy?.id ?: super.fId
         }
 
     open fun onPostValue(bundle: Bundle?) {}

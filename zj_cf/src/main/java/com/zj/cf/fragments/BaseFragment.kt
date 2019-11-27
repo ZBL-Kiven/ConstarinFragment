@@ -20,7 +20,7 @@ abstract class BaseFragment : Fragment() {
         NONE(-1), CREATE(-1), CREATED(3), START(9), RESTART(9), RESUME(15), PAUSE(8), STOP(4), DESTROY(2)
     }
 
-    open val id: String = UUID.randomUUID().toString()
+    open val fId: String = UUID.randomUUID().toString()
     internal var managerId: String = ""
     var rootView: View? = null
     var removing = false
@@ -289,5 +289,4 @@ abstract class BaseFragment : Fragment() {
     protected fun <T : View> find(id: Int): T? {
         return rootView?.findViewById(id)
     }
-
 }

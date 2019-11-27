@@ -1,11 +1,4 @@
 package com.zj.cf
-
-import com.zj.cf.BackMode.LASTING
-import com.zj.cf.BackMode.ONLY_ONCE
-import com.zj.cf.LaunchMode.CLEAR_BACK_STACK
-import com.zj.cf.LaunchMode.FOLLOW
-import com.zj.cf.LaunchMode.STACK
-
 /**
  * created by zjj on 19.05.14
  *
@@ -22,18 +15,3 @@ object LaunchMode {
     const val FOLLOW = 2
     const val CLEAR_BACK_STACK = 3
 }
-
-/**
- * created by zjj on 19.05.14
- *
- * the lifecycle with fragment
- *
- * @property ONLY_ONCE the fragment has created only by used , and it'll destroy when close
- *
- * @property LASTING if the manager is running or activity was living , the fragment will exists in long at stack
- * */
-object BackMode {
-    const val ONLY_ONCE = 1
-    const val LASTING = 2
-}
-

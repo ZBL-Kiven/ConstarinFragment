@@ -12,7 +12,7 @@ internal object FMStore {
     private val managers = mutableMapOf<String, ManagerInfo<*>>()
 
     /**
-     * @param key if called object was a linkage fragment instance, the pid is managerId but the fragment id is the mapping keys
+     * @param key if called object was a linkage fragment instance, the pid is managerId but the fragment fId is the mapping keys
      * */
     fun <F : BaseFragment> putAManager(curManagerId: String?, manager: FragmentHelper<F>, key: String = "") {
         if (manager is BaseFragmentManager) {
@@ -141,41 +141,43 @@ internal object FMStore {
         }
         return findLastConstrainOrNull(id)
     }
-}
 
-/**
- * the fragment id generator , create a specially id and only decrypt on this class
- *
- * the I means index
- *
- * the M means manager_id
- *
- * */
-private const val ID_DOT = "%s-I-%d-M-%s"
 
-@Throws(NullPointerException::class)
-internal fun <F : BaseFragment> generateId(id: String, manager: FragmentHelper<F>): String {
-    var indexOfLast = -1
-    manager.getFragmentIds()?.asReversed()?.forEach {
-        if (it.contains(id)) {
-            val simpled = getSimpleId(it)
-            if (simpled.first == id && indexOfLast <= simpled.second) {
-                indexOfLast = simpled.second + 1
+    /**
+     * the fragment fId generator , create a specially fId and only decrypt on this class
+     *
+     * the I means index
+     *
+     * the M means manager_id
+     *
+     * */
+    private const val ID_DOT = "%s-I-%d-M-%s"
+
+    @Throws(NullPointerException::class)
+    internal fun <F : BaseFragment> generateId(id: String, manager: FragmentHelper<F>): String {
+        var indexOfLast = -1
+        manager.getFragmentIds()?.asReversed()?.forEach {
+            if (it.contains(id)) {
+                val simpled = getSimpleId(it)
+                if (simpled.first == id && indexOfLast <= simpled.second) {
+                    indexOfLast = simpled.second + 1
+                }
             }
         }
+        return String.format(ID_DOT, id, indexOfLast, manager.managerId)
     }
-    return String.format(ID_DOT, id, indexOfLast, manager.managerId)
+
+    /**
+     * get a parsed fragment fId
+     * */
+    @Throws(NullPointerException::class)
+    internal fun getSimpleId(id: String): Triple<String, Int, String> {
+        val array = id.split("-I-|-M-".toRegex())
+        try {
+            return Triple(array[0], array[1].toInt(), array[2])
+        } catch (e: Exception) {
+            throw NullPointerException("can't parsed the fragment fId, may fId $id was wrong form generate")
+        }
+    }
 }
 
-/**
- * get a parsed fragment id
- * */
-@Throws(NullPointerException::class)
-internal fun getSimpleId(id: String): Triple<String, Int, String> {
-    val array = id.split("-I-|-M-".toRegex())
-    try {
-        return Triple(array[0], array[1].toInt(), array[2])
-    } catch (e: Exception) {
-        throw NullPointerException("can't parsed the fragment id, may id $id was wrong form generate")
-    }
-}

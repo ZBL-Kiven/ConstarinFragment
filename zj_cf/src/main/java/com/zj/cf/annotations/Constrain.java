@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 public @interface Constrain {
 
     /**
-     * the id for this ,and it must be unique for the the same manager
+     * the fId for this ,and it must be unique for the the same manager
      */
     String id();
 

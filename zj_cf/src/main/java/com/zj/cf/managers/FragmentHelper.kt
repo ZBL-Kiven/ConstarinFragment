@@ -24,7 +24,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     private val fragmentManager: FragmentManager
     private val containId: Int
 
-    constructor(fragment: BaseFragment, containId: Int) : this(if (fragment is ConstrainFragment) fragment.managerId else fragment.id, fragment.childFragmentManager, containId)
+    constructor(fragment: BaseFragment, containId: Int) : this(if (fragment is ConstrainFragment) fragment.managerId else fragment.fId, fragment.childFragmentManager, containId)
 
     constructor(act: FragmentActivity, containId: Int) : this("", act.supportFragmentManager, containId)
 
@@ -94,7 +94,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     @UiThread
     fun addFragments(fragments: List<F>?) {
         if (!fragments.isNullOrEmpty()) fragments.forEach {
-            mFragments[it.id] = it.apply {
+            mFragments[it.fId] = it.apply {
                 this.managerId = this@FragmentHelper.managerId
             }
         }
@@ -137,7 +137,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     }
 
     /**
-     * @param showId the shown fragment id
+     * @param showId the shown fragment fId
      */
     @UiThread
     fun showFragment(showId: String) {
@@ -167,16 +167,16 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         getFragmentById(currentItem)?.let { frg ->
             fun shown() {
                 runInTransaction(true, frg) { it.show(frg) }
-                onShown?.invoke(frg.id)
+                onShown?.invoke(frg.fId)
             }
             if (frg.isExists()) {
                 (fragmentObserver?.beforeHiddenChange(frg, false) { shown() }) ?: shown()
             } else {
                 frg.let { f ->
                     runInTransaction(null, f) {
-                        it.add(containId, f, f.id).show(f)
+                        it.add(containId, f, f.fId).show(f)
                     }
-                    onShown?.invoke(frg.id)
+                    onShown?.invoke(frg.fId)
                 }
             }
         } ?: throw NullPointerException("bad call ! ,case : your current shown item was never instanced form data source")
@@ -202,7 +202,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         if (v.isExists()) {
             if (!v.isHidden) (fragmentObserver?.beforeHiddenChange(v, true) { hide(v) }) ?: hide(v)
         } else if (!isRemoved) {
-            runInTransaction(null, v) { it.add(containId, v, v.id).hide(v) }
+            runInTransaction(null, v) { it.add(containId, v, v.fId).hide(v) }
         }
     }
 
@@ -215,7 +215,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     }
 
     private fun F.isExists(): Boolean {
-        return isAdded || fragmentManager?.findFragmentByTag(id) != null
+        return isAdded || fragmentManager?.findFragmentByTag(fId) != null
     }
 
     /**

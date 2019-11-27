@@ -73,7 +73,7 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
         checkChildValidate(fragments.size, indicatorViews)
         if (fragments.isNullOrEmpty()) throw NullPointerException("the empty fragments was no point")
         if (curIndex !in 0..fragments.lastIndex) throw IndexOutOfBoundsException("current index was $curIndex but fragments size was ${fragments.size}")
-        val curItem = fragments[curIndex].id
+        val curItem = fragments[curIndex].fId
         fragments.forEach {
             val hasHome = AnnotationParser.parseCls<ConstrainHome>(it::class.java) != null
             val hasLaunchMode = AnnotationParser.parseCls<LaunchMode>(it::class.java) != null
@@ -87,7 +87,7 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
             if (hasLaunchMode) {
                 throw IllegalStateException("the base fragment manager was not supported by LaunchMode annotation")
             }
-            FMStore.putAManager(it.managerId, this, it.id)
+            FMStore.putAManager(it.managerId, this, it.fId)
         }
         indicatorViews.forEachIndexed { i, v ->
             fragments[i].linkageView = v
@@ -114,7 +114,7 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
         showFragment(curItem)
         getFragments()?.forEach { frg ->
             frg.linkageView?.setOnClickListener {
-                showFragment(frg.id)
+                showFragment(frg.fId)
             }
         }
     }
@@ -133,7 +133,7 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
             if (v?.isSelected != isSelected) v?.isSelected = isSelected
         }
         getFragments()?.forEach {
-            onSelectState(it.linkageView, it.id == selectId)
+            onSelectState(it.linkageView, it.fId == selectId)
         }
     }
 }
