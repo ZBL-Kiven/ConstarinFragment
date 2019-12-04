@@ -117,13 +117,15 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
                     stack?.clear()
                     FMStore.checkIsConstrainParent(managerId)
                     if (clearWhenEmptyStack()) {
-                        clearFragments()
-                        val mid = it.getManagerId()
-                        FMStore.getManagerByLevel(mid, -1)?.let { lastManager ->
-                            lastManager.getCurrentFragment()?.onFragmentResumed()
+                        removeFragmentById(it.id) {
+                            clearFragments()
+                            val mid = it.getManagerId()
+                            FMStore.getManagerByLevel(mid, -1)?.let { lastManager ->
+                                lastManager.getCurrentFragment()?.onFragmentResumed()
+                            }
+                            FMStore.removeAManager(mid)
+                            onFinished?.invoke(true, true)
                         }
-                        FMStore.removeAManager(mid)
-                        onFinished?.invoke(true, true)
                     } else {
                         stack?.push(it)
                         onFinished?.invoke(false, true)

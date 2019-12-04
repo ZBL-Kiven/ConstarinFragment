@@ -51,7 +51,6 @@ internal object FMStore {
                 is BaseFragmentManager -> {
                     removeLinkage(manager)
                 }
-
                 is ConstrainFragmentManager -> {
                     managers[nextId]?.let {
                         it.manager.clearFragments()
