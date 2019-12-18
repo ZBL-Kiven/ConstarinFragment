@@ -123,11 +123,13 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
         getFragmentById(id)?.linkageView?.callOnClick()
     }
 
+    /**
+     * use it when context is activity.
+     *
+     * but no if you started it by a ConstrainFragment context.
+     * */
     fun clear() {
-        getOriginalFragments().forEach {
-            removeFragmentById(it.key)
-        }
-        FMStore.removeAManager(this.managerId)
+        FMStore.removeManager(this.managerId)
     }
 
     override fun beginTransaction(isHidden: Boolean, transaction: FragmentTransaction, frgCls: Class<BaseLinkageFragment>) {

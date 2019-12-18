@@ -8,8 +8,10 @@ object ToastUtils {
     private var toast: Toast? = null
 
     fun show(context: Context?, txt: String) {
-        if (toast == null) toast = Toast.makeText(context?.applicationContext, txt, Toast.LENGTH_SHORT)
-        else toast?.setText(txt)
-        toast?.show()
+        context?.applicationContext?.let {
+            if (toast == null) toast = Toast.makeText(it, txt, Toast.LENGTH_SHORT)
+            else toast?.setText(txt)
+            toast?.show()
+        }
     }
 }

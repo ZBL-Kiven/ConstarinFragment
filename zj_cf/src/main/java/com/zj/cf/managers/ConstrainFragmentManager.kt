@@ -4,9 +4,9 @@ import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.annotation.UiThread
 import androidx.fragment.app.FragmentManager
-import com.zj.cf.*
 import com.zj.cf.FMStore
 import com.zj.cf.FMStore.getSimpleId
+import com.zj.cf.annotations.ConstrainMode.*
 import com.zj.cf.fragments.ConstrainFragment
 import com.zj.cf.unitive.ProxyManager
 import java.util.*
@@ -72,7 +72,7 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
                 } else {
                     (0..(maxIndex - firstStackIndex)).forEach { _ ->
                         val p = stack?.pop()
-                        if (p?.backMode == BackMode.ONLY_ONCE) {
+                        if (p?.backMode == CONST_ONLY_ONCE) {
                             removeFragmentById(p.id)
                         }
                     }
@@ -82,9 +82,9 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
         }
 
         when (proxy.launchMode) {
-            LaunchMode.STACK -> stack(proxy)
-            LaunchMode.FOLLOW -> follow(proxy)
-            LaunchMode.CLEAR_BACK_STACK -> clearStack(proxy)
+            STACK -> stack(proxy)
+            FOLLOW -> follow(proxy)
+            CLEAR_BACK_STACK -> clearStack(proxy)
         }
         syncFrag(false, null)
     }
@@ -117,15 +117,18 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
                     stack?.clear()
                     FMStore.checkIsConstrainParent(managerId)
                     if (clearWhenEmptyStack()) {
+
+
                         removeFragmentById(it.id) {
                             clearFragments()
                             val mid = it.getManagerId()
                             FMStore.getManagerByLevel(mid, -1)?.let { lastManager ->
                                 lastManager.getCurrentFragment()?.onFragmentResumed()
                             }
-                            FMStore.removeAManager(mid)
+                            FMStore.removeManager(mid)
                             onFinished?.invoke(true, true)
                         }
+
                     } else {
                         stack?.push(it)
                         onFinished?.invoke(false, true)
@@ -133,10 +136,10 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
                     return
                 }
                 when (it.backMode) {
-                    BackMode.ONLY_ONCE -> {
+                    CONST_ONLY_ONCE -> {
                         removeFragmentById(it.id) { onFinished?.invoke(false, false) }
                     }
-                    BackMode.LASTING -> {
+                    CONST_LASTING -> {
                         hideFragment(it.id) { onFinished?.invoke(false, false) }
                     }
                 };syncFrag(true, it.getResultBundle())

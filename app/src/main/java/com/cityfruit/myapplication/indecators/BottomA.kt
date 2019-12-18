@@ -12,6 +12,9 @@ import com.zj.cf.fragments.BaseLinkageFragment
 import com.zj.cf.managers.BaseFragmentManager
 import com.zj.cf.startFragmentByNewTask
 import com.cityfruit.myapplication.fragments.FragmentD
+import com.cityfruit.myapplication.tabs.TabA
+import com.cityfruit.myapplication.tabs.TabB
+import com.cityfruit.myapplication.tabs.TabC
 import kotlinx.android.synthetic.main.fragment_b.*
 
 class BottomA : BaseLinkageFragment() {
@@ -33,8 +36,8 @@ class BottomA : BaseLinkageFragment() {
                 false
             })
         }
-        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, TabA(), TabB(), TabC()) {
-
-        }
+//        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, TabA(), TabB(), TabC()) {
+//
+//        }
     }
 }

@@ -4,6 +4,7 @@ import com.zj.cf.fragments.BaseFragment
 import com.zj.cf.managers.BaseFragmentManager
 import com.zj.cf.managers.ConstrainFragmentManager
 import com.zj.cf.managers.FragmentHelper
+import java.lang.IllegalArgumentException
 
 internal object FMStore {
 
@@ -29,43 +30,49 @@ internal object FMStore {
             val managerInfo = ManagerInfo("", curManagerId, manager)
             managers[key] = managerInfo
         }
+        println("a-----  key  =  $key   mid = ${manager.managerId}")
     }
 
-    fun removeAManager(managerId: String?) {
+    fun removeManager(managerId: String?) {
 
-        fun removeAllTopsFromStacks(curFinishingFrg: ManagerInfo<*>) {
-            val manager = curFinishingFrg.manager
-            managers.remove(manager.managerId)
+        val removeList = mutableSetOf<String>()
 
-            fun removeLinkage(linkage: BaseFragmentManager?) {
-                linkage?.getFragmentIds()?.forEach {
-                    val cfm = managers.remove(it)
-                    cfm?.manager?.clearFragments()
-                    val lfm = managers[cfm?.nextId]
-                    if (lfm != null) removeAllTopsFromStacks(lfm)
-                }
-            }
+        fun remove(managerId: String?, layer: Int = 0) {
 
-            val nextId = curFinishingFrg.nextId
-            when (manager) {
-                is BaseFragmentManager -> {
-                    removeLinkage(manager)
-                }
-                is ConstrainFragmentManager -> {
-                    managers[nextId]?.let {
-                        it.manager.clearFragments()
-                        removeAllTopsFromStacks(it)
+            fun removeLinkageManager(manager: BaseFragmentManager, nextId: String? = null) {
+                nextId?.let { n -> removeList.add(n) }
+                manager.getFragmentIds()?.forEach { s ->
+                    manager.removeFragmentById(s)
+                    managers[s]?.let { m2 ->
+                        removeList.add(s)
+                        remove(m2.nextId, layer + 1)
                     }
                 }
             }
-        }
 
-        if (managers.contains(managerId)) {
-            val curFinishingFrg = managers[managerId] ?: return
-            managers[curFinishingFrg.pId]?.let {
-                it.nextId = ""
+            fun removeConstrainManager(manager: ConstrainFragmentManager, nextId: String? = null) {
+                manager.getFragmentIds()?.forEach {
+                    manager.removeFragmentById(it)
+                }
+                remove(nextId, layer + 1)
             }
-            removeAllTopsFromStacks(curFinishingFrg)
+
+            managers[managerId]?.let {
+                removeList.add(it.manager.managerId)
+                when (it.manager) {
+                    is BaseFragmentManager -> {
+                        removeLinkageManager(it.manager, it.nextId)
+                    }
+                    is ConstrainFragmentManager -> {
+                        removeConstrainManager(it.manager, it.nextId)
+                    }
+                    else -> throw IllegalArgumentException("unknown type formatted !!")
+                }
+            }
+        }
+        remove(managerId)
+        removeList.forEach {
+            managers.remove(it)
         }
     }
 

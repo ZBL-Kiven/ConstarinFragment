@@ -1,4 +1,4 @@
-package com.cityfruit.myapplication.indecators
+package com.cityfruit.myapplication.tabs
 
 import android.view.LayoutInflater
 import android.view.View

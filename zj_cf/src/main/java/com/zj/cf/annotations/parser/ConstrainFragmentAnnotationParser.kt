@@ -1,11 +1,11 @@
 package com.zj.cf.annotations.parser
 
 import android.os.Bundle
-import com.zj.cf.BackMode
 import com.zj.cf.FMStore
-import com.zj.cf.LaunchMode.FOLLOW
 import com.zj.cf.annotations.Constrain
 import com.zj.cf.annotations.ConstrainHome
+import com.zj.cf.annotations.ConstrainMode.CONST_ONLY_ONCE
+import com.zj.cf.annotations.ConstrainMode.FOLLOW
 import com.zj.cf.annotations.LaunchMode
 import com.zj.cf.fragments.ConstrainFragment
 import com.zj.cf.managers.ConstrainFragmentManager
@@ -20,7 +20,7 @@ internal object ConstrainFragmentAnnotationParser {
         val launchMode = launchModeParse?.mode ?: FOLLOW
         val isHome = constrainHomeParse != null
         val constrainParser = AnnotationParser.parseCls<Constrain>(fragmentCls)
-        val backMode = constrainParser?.backMode ?: BackMode.ONLY_ONCE
+        val backMode = constrainParser?.backMode ?: CONST_ONLY_ONCE
         val fid = FMStore.generateId(constrainParser?.id ?: throw NullPointerException("the fragment fId was not found,did you forgot annotation : Constrain( fId = \"XXX\") in your ${fragmentCls.simpleName}.class?"), fragmentManager ?: throw NullPointerException("bad request ! you still haven’t a manager yet!"))
         return ProxyManager(fragmentCls, fid, backMode, launchMode, isHome, bundle)
     }

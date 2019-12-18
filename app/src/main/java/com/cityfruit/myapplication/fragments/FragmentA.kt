@@ -1,13 +1,12 @@
 package com.cityfruit.myapplication.fragments
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import com.cityfruit.myapplication.R
 import com.cityfruit.myapplication.addOnClickListener
-import com.zj.cf.BackMode
 import com.zj.cf.annotations.Constrain
 import com.zj.cf.annotations.Container
 import com.zj.cf.fragments.ConstrainFragment
@@ -15,7 +14,7 @@ import com.zj.cf.startFragmentByNewTask
 import com.cityfruit.myapplication.getBundle
 import kotlinx.android.synthetic.main.fragment_a.*
 
-@Constrain(id = "FragmentA", backMode = BackMode.ONLY_ONCE)
+@Constrain(id = "FragmentA", backMode = 1)
 class FragmentA : ConstrainFragment() {
 
     @Container
@@ -49,6 +48,6 @@ class FragmentA : ConstrainFragment() {
         }
         val text = javaClass.simpleName
         txt?.text = text
-        bg?.setBackgroundColor(activity?.getColor(R.color.c1) ?: Color.BLACK)
+        bg?.setBackgroundColor(ContextCompat.getColor(activity?:return,R.color.c1))
     }
 }

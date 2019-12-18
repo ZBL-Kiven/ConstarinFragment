@@ -230,12 +230,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         }
     }
 
-    internal fun getOriginalFragments(): MutableMap<String, F> {
-        return mFragments
-    }
-
     internal fun clearFragments() {
-        hideFragments(true) { _, _ -> return@hideFragments true }
         mFragments.clear()
     }
 }
