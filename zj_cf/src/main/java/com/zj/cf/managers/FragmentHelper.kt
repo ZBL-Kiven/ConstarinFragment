@@ -101,7 +101,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     }
 
     @UiThread
-    fun removeFragmentById(id: String, onRemoved: (() -> Unit)? = null) {
+    internal fun removeFragmentById(id: String, onRemoved: (() -> Unit)? = null) {
         fun remove(frg: F) {
             runInTransaction(true, frg) {
                 it.remove(frg)
@@ -190,9 +190,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
     private fun hideFragment(v: F?, isRemoved: Boolean, onHidden: (() -> Unit)? = null) {
         fun hide(v: F) {
-            if (v.isResume || isRemoved) {
-                if (isRemoved) v.onFragmentDestroy()
-            }
+            if (isRemoved) v.onFragmentDestroy()
             runInTransaction(true, v) { it.hide(v);onHidden?.invoke() }
         }
 
@@ -232,9 +230,12 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         }
     }
 
+    internal fun getOriginalFragments(): MutableMap<String, F> {
+        return mFragments
+    }
+
     internal fun clearFragments() {
         hideFragments(true) { _, _ -> return@hideFragments true }
         mFragments.clear()
-        fragmentManager.popBackStack()
     }
 }

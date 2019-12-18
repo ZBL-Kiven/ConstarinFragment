@@ -123,6 +123,13 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
         getFragmentById(id)?.linkageView?.callOnClick()
     }
 
+    protected fun clear() {
+        getOriginalFragments().forEach {
+            removeFragmentById(it.key)
+        }
+        FMStore.removeAManager(this.managerId)
+    }
+
     override fun beginTransaction(isHidden: Boolean, transaction: FragmentTransaction, frgCls: Class<BaseLinkageFragment>) {
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
     }
