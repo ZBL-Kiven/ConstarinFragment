@@ -123,7 +123,7 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
         getFragmentById(id)?.linkageView?.callOnClick()
     }
 
-    protected fun clear() {
+    fun clear() {
         getOriginalFragments().forEach {
             removeFragmentById(it.key)
         }
