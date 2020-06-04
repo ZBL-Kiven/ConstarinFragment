@@ -1,0 +1,43 @@
+apply plugin: 'maven'
+
+afterEvaluate {
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                Properties properties = new Properties()
+                String path = getProjectDir().path + '/upload.properties'
+                File file = new File(path)
+                if (file.exists()) {
+                    InputStream inputStream = file.newDataInputStream()
+                    properties.load(inputStream)
+                } else {
+                    throw new FileNotFoundException("File not found exception \n case: the file path is " + path)
+                }
+                String MAVEN_REPO_SNAPSHOT_URL = properties.getProperty("MAVEN_REPO_SNAPSHOT_URL")
+                String MAVEN_REPO_RELEASE_URL = properties.getProperty("MAVEN_REPO_RELEASE_URL")
+                String GROUP_ID = properties.getProperty("GROUP_ID")
+                String USERNAME = properties.getProperty("USERNAME")
+                String PASSWORD = properties.getProperty("PASSWORD")
+                String VERSION = properties.getProperty("VERSION")
+                String PACKAGING = properties.getProperty("PACKAGING")
+                String ARTIFACT_ID = properties.getProperty("ARTIFACT_ID")
+                String DESC = properties.getProperty("DESC")
+
+                repository(url: MAVEN_REPO_RELEASE_URL) {
+                    authentication(userName: USERNAME, password: PASSWORD)
+                }
+                snapshotRepository(url: MAVEN_REPO_SNAPSHOT_URL) {
+                    authentication(userName: USERNAME, password: PASSWORD)
+                }
+
+                pom.project {
+                    version = VERSION
+                    artifactId = ARTIFACT_ID
+                    groupId = GROUP_ID
+                    packaging = PACKAGING
+                    description = DESC
+                }
+            }
+        }
+    }
+}
