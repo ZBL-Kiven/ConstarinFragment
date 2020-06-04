@@ -94,23 +94,14 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
             attachView(v)
         }
         addFragments(fragments)
-        show(curItem, true)
+        show(curItem)
     }
 
     private fun attachView(v: View?) {
         v?.let { onViewAttach(it) }
     }
 
-    /**
-     *  prevent the quick click event jitter
-     * */
-    private var clickTime: Long = 0
-
-    private fun show(curItem: String, ignoreFastClick: Boolean = false) {
-        if (!ignoreFastClick && System.currentTimeMillis() - clickTime < 300) {
-            return
-        }
-        clickTime = System.currentTimeMillis()
+    private fun show(curItem: String) {
         showFragment(curItem)
         getFragments()?.forEach { frg ->
             frg.linkageView?.setOnClickListener {
