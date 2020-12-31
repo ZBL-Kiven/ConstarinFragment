@@ -57,4 +57,8 @@ class FragmentB : ConstrainFragment() {
         txt?.text = text
         bg?.setBackgroundColor(ContextCompat.getColor(activity ?: return, R.color.c2))
     }
+
+    override fun onFragmentResult(bundle: Bundle?) {
+        super.onFragmentResult(bundle)
+    }
 }

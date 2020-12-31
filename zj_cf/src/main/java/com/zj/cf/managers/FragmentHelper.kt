@@ -24,9 +24,20 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     private val fragmentManager: FragmentManager
     private val containId: Int
 
-    constructor(fragment: BaseFragment, containId: Int) : this(if (fragment is ConstrainFragment) fragment.managerId else fragment.fId, fragment.childFragmentManager, containId)
+    constructor(
+        fragment: BaseFragment,
+        containId: Int
+    ) : this(
+        if (fragment is ConstrainFragment) fragment.managerId else fragment.fId,
+        fragment.childFragmentManager,
+        containId
+    )
 
-    constructor(act: FragmentActivity, containId: Int) : this("", act.supportFragmentManager, containId)
+    constructor(act: FragmentActivity, containId: Int) : this(
+        "",
+        act.supportFragmentManager,
+        containId
+    )
 
     constructor(managerId: String, f: FragmentManager, c: Int) {
         FMStore.putAManager(managerId, getManager());fragmentManager = f;containId = c
@@ -144,7 +155,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         if (showId == currentItem) {
             whenShowSameFragment(showId)
         } else {
-            if (whenShowNotSameFragment(showId)) {
+            if (whenShowNotSameFragment(showId, currentItem)) {
                 currentItem = showId
                 performSelectItem()
             }
@@ -179,7 +190,8 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
                     onShown?.invoke(frg.fId)
                 }
             }
-        } ?: throw NullPointerException("bad call ! ,case : your current shown item was never instanced form data source")
+        }
+            ?: throw NullPointerException("bad call ! ,case : your current shown item was never instanced form data source")
     }
 
     private fun hideFragments(isRemoved: Boolean, case: (k: String, v: F) -> Boolean) {
@@ -208,7 +220,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
     override fun whenShowSameFragment(shownId: String) {}
 
-    override fun whenShowNotSameFragment(shownId: String): Boolean {
+    override fun whenShowNotSameFragment(shownId: String, lastId: String): Boolean {
         return true
     }
 
@@ -220,7 +232,11 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
      * running a transaction form manager
      * @param isHidden it may ignore with null,else it call overridden to set a transaction type
      * */
-    private fun runInTransaction(isHidden: Boolean?, fragment: F, run: (FragmentTransaction) -> Unit) {
+    private fun runInTransaction(
+        isHidden: Boolean?,
+        fragment: F,
+        run: (FragmentTransaction) -> Unit
+    ) {
         val transaction = fragmentManager.beginTransaction()
         try {
             if (isHidden != null) beginTransaction(isHidden, transaction, fragment.javaClass)

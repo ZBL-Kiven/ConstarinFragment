@@ -14,5 +14,5 @@ interface FragmentOperator<F : BaseFragment> {
 
     fun whenShowSameFragment(shownId: String)
 
-    fun whenShowNotSameFragment(shownId: String): Boolean
+    fun whenShowNotSameFragment(shownId: String, lastId: String): Boolean
 }
