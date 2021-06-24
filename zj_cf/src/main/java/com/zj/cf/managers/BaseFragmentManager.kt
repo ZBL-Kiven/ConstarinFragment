@@ -124,7 +124,7 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
     }
 
     override fun beginTransaction(isHidden: Boolean, transaction: FragmentTransaction, frgCls: Class<BaseLinkageFragment>) {
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        transaction.setTransition(FragmentTransaction.TRANSIT_NONE)
     }
 
     override fun syncSelectState(selectId: String) {

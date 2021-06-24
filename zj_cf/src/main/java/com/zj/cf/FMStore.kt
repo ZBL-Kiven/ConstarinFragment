@@ -4,11 +4,11 @@ import com.zj.cf.fragments.BaseFragment
 import com.zj.cf.managers.BaseFragmentManager
 import com.zj.cf.managers.ConstrainFragmentManager
 import com.zj.cf.managers.FragmentHelper
+import com.zj.cf.unitive.ManagerInfo
 import java.lang.IllegalArgumentException
+import java.lang.StringBuilder
 
 internal object FMStore {
-
-    data class ManagerInfo<F : BaseFragment>(var nextId: String?, val pId: String?, val manager: FragmentHelper<F>)
 
     private val managers = mutableMapOf<String, ManagerInfo<*>>()
 
@@ -148,6 +148,23 @@ internal object FMStore {
         return findLastConstrainOrNull(id)
     }
 
+    fun getManagersInfo(): String {
+        try {
+            val total = managers.size
+            val sb = StringBuilder("{").append("\"totalManagers\":${total},\"fgs\":[")
+            managers.forEach { (k, v) ->
+                sb.append("{\"k\":$k,\"v\":$v},\n")
+            }
+            sb.removeSuffix(",")
+            sb.append("]}")
+            return sb.toString()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return ""
+    }
 
     /**
      * the fragment fId generator , create a specially fId and only decrypt on this class

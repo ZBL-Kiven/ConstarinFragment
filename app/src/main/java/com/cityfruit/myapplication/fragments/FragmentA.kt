@@ -17,8 +17,7 @@ import kotlinx.android.synthetic.main.fragment_a.*
 @Constrain(id = "FragmentA", backMode = 1)
 class FragmentA : ConstrainFragment() {
 
-    @Container
-    var frgContainer: FrameLayout? = null
+    @Container var frgContainer: FrameLayout? = null
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.fragment_a, container, false)
@@ -48,6 +47,6 @@ class FragmentA : ConstrainFragment() {
         }
         val text = javaClass.simpleName
         txt?.text = text
-        bg?.setBackgroundColor(ContextCompat.getColor(activity?:return,R.color.c1))
+        bg?.setBackgroundColor(ContextCompat.getColor(activity ?: return, R.color.c1))
     }
 }

@@ -8,6 +8,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.zj.cf.FMStore
+import com.zj.cf.lifecycleCallback
+import com.zj.cf.unitive.Lifecycle
 import java.lang.IllegalArgumentException
 import java.util.*
 
@@ -16,15 +19,15 @@ import java.util.*
  */
 abstract class BaseFragment : Fragment() {
 
-    private enum class Lifecycle(val value: Int) {
-        NONE(-1), CREATE(-1), CREATED(3), START(9), RESTART(9), RESUME(15), PAUSE(8), STOP(4), DESTROY(2)
-    }
-
     open val fId: String = UUID.randomUUID().toString()
     internal var managerId: String = ""
     var rootView: View? = null
     var removing = false
     private var curLifeState = Lifecycle.NONE
+        set(value) {
+            field = value
+            lifecycleCallback?.invoke(value, fId, FMStore.getManagersInfo())
+        }
 
     val exists: Boolean
         get() = curLifeState != Lifecycle.NONE
@@ -116,26 +119,23 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    open fun performResume() {
-        //避免 Activity resume 所有 Fragment 得到焦点
+    open fun performResume() { //Prevent all Fragment of Activity resume from getting focus
         if (parentHide(this)) {
             return
         }
-
         if (curLifeState == Lifecycle.CREATE) {
             performCreate()
             performStart()
         }
 
-        //由于Fragment 没有onReStart()
+        //Since Fragment does not have onReStart()
         if (curLifeState == Lifecycle.STOP) {
             performReStart()
         }
 
         if (curLifeState == Lifecycle.START || curLifeState == Lifecycle.RESTART || curLifeState == Lifecycle.PAUSE) {
             curLifeState = Lifecycle.RESUME
-            onResumed()
-            //调节栈顶 后面扩展
+            onResumed() //Adjust the top of the stack and expand at the back
             performChildResume()
         }
     }
@@ -231,6 +231,15 @@ abstract class BaseFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+    /**
+     * @Deprecated use [onViewCreated] for code touching
+     * the Fragment's view and {@link #onCreate(Bundle)} for other initialization.
+     * */
+    @Suppress("DEPRECATION")
+    final override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+    }
+
     final override fun onStart() {
         super.onStart()
         performStart()
@@ -257,10 +266,6 @@ abstract class BaseFragment : Fragment() {
 
     final override fun onDetach() {
         super.onDetach()
-    }
-
-    final override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
     }
 
     final override fun onSaveInstanceState(outState: Bundle) {}

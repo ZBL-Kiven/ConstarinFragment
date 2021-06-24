@@ -7,7 +7,7 @@ import com.zj.cf.fragments.BaseFragment
 import com.zj.cf.fragments.ConstrainFragment
 import com.zj.cf.managers.ConstrainFragmentManager
 
-data class ProxyManager<T : ConstrainFragment>(internal val mFragmentClass: Class<T>, val id: String, val backMode: Int, val launchMode: Int, val isHome: Boolean, val bundle: Bundle?) {
+internal data class ProxyManager<T : ConstrainFragment>(internal val mFragmentClass: Class<T>, val id: String, val backMode: Int, val launchMode: Int, val isHome: Boolean, val bundle: Bundle?) {
 
     private var fragmentManager: ConstrainFragmentManager? = null
 

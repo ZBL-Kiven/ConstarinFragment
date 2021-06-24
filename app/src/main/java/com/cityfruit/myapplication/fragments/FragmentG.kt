@@ -20,8 +20,7 @@ import kotlinx.android.synthetic.main.fragment_a.*
 @Constrain(id = "FragmentG", backMode = 1)
 class FragmentG : ConstrainFragment() {
 
-    @Container
-    var frgContainer: FrameLayout? = null
+    @Container var frgContainer: FrameLayout? = null
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.fragment_a, container, false)
@@ -48,12 +47,12 @@ class FragmentG : ConstrainFragment() {
             startFragment(FragmentB::class.java, getBundle("frgG ==> frgB"))
         }
         a_btn_new_linkage?.addOnClickListener {
-            startFragmentByNewTask(FragmentH::class.java, getBundle("frgG ==> frg-Linkage"),{
+            startFragmentByNewTask(FragmentH::class.java, getBundle("frgG ==> frg-Linkage"), {
                 true
             })
         }
         val text = javaClass.simpleName
         txt?.text = text
-        bg?.setBackgroundColor(ContextCompat.getColor(activity?:return,R.color.c7))
+        bg?.setBackgroundColor(ContextCompat.getColor(activity ?: return, R.color.c7))
     }
 }

@@ -14,6 +14,9 @@ import com.cityfruit.myapplication.getBundle
 import kotlinx.android.synthetic.main.bottom.*
 
 class TabB : BaseLinkageFragment() {
+
+    override val fId: String; get() = "TAB_NO_SCROLL_B" + super.fId
+
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.bottom, container, false)
     }

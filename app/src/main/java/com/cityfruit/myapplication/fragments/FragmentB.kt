@@ -20,8 +20,7 @@ import kotlinx.android.synthetic.main.fragment_a.*
 @Constrain(id = "FragmentB", backMode = 1)
 class FragmentB : ConstrainFragment() {
 
-    @Container
-    var frgContainer: FrameLayout? = null
+    @Container var frgContainer: FrameLayout? = null
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.fragment_a, container, false)

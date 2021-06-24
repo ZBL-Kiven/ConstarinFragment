@@ -15,12 +15,13 @@ import kotlinx.android.synthetic.main.bottom.*
 
 class TabC : BaseLinkageFragment() {
 
+    override val fId: String; get() = "TAB_NO_SCROLL_C" + super.fId
+
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.bottom, container, false)
     }
 
-    @Container
-    var container: FrameLayout? = null
+    @Container var container: FrameLayout? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -30,5 +31,4 @@ class TabC : BaseLinkageFragment() {
             false
         })
     }
-
 }

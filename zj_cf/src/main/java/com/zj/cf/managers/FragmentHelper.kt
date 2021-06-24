@@ -11,6 +11,7 @@ import com.zj.cf.fragments.BaseFragment
 import com.zj.cf.fragments.ConstrainFragment
 import com.zj.cf.unitive.FragmentObserver
 import com.zj.cf.unitive.FragmentOperator
+import java.lang.Exception
 import java.util.*
 import java.lang.NullPointerException
 
@@ -24,20 +25,9 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     private val fragmentManager: FragmentManager
     private val containId: Int
 
-    constructor(
-        fragment: BaseFragment,
-        containId: Int
-    ) : this(
-        if (fragment is ConstrainFragment) fragment.managerId else fragment.fId,
-        fragment.childFragmentManager,
-        containId
-    )
+    constructor(fragment: BaseFragment, containId: Int) : this(if (fragment is ConstrainFragment) fragment.managerId else fragment.fId, fragment.childFragmentManager, containId)
 
-    constructor(act: FragmentActivity, containId: Int) : this(
-        "",
-        act.supportFragmentManager,
-        containId
-    )
+    constructor(act: FragmentActivity, containId: Int) : this("", act.supportFragmentManager, containId)
 
     constructor(managerId: String, f: FragmentManager, c: Int) {
         FMStore.putAManager(managerId, getManager());fragmentManager = f;containId = c
@@ -49,10 +39,10 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
     private var currentItem = ""
     private var oldItem = ""
-    private val mFragments = mutableMapOf<String, F>()
     private var fragmentObserver: FragmentObserver? = null
+    protected val mFragments = mutableMapOf<String, F>()
 
-    fun getCurrentItemId(): String {
+    open fun getCurrentItemId(): String {
         return currentItem
     }
 
@@ -63,7 +53,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         }
     }
 
-    fun getFragmentIds(): List<String>? {
+    open fun getFragmentIds(): List<String>? {
         return if (mFragments.isNullOrEmpty()) null else mFragments.mapTo(arrayListOf()) {
             it.key
         }
@@ -74,17 +64,17 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
      *
      * only supported by fragmentHelper extensions.
      * */
-    fun getTopOfStack(): BaseFragment? {
+    open fun getTopOfStack(): BaseFragment? {
         return FMStore.getTopConstrainFragment(managerId)
     }
 
     @UiThread
-    fun getFragmentById(id: String): F? {
+    open fun getFragmentById(id: String): F? {
         return mFragments[id]
     }
 
     @UiThread
-    fun getCurrentFragment(): F? {
+    open fun getCurrentFragment(): F? {
         return mFragments[currentItem]
     }
 
@@ -93,7 +83,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
      * setFragmentObserver can pause the transaction,call observer's method : StateChange to resume this operation when it was finalized
      */
     @UiThread
-    fun setFragmentObserver(observer: FragmentObserver) {
+    open fun setFragmentObserver(observer: FragmentObserver) {
         this.fragmentObserver = observer
     }
 
@@ -190,8 +180,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
                     onShown?.invoke(frg.fId)
                 }
             }
-        }
-            ?: throw NullPointerException("bad call ! ,case : your current shown item was never instanced form data source")
+        } ?: throw NullPointerException("bad call ! ,case : your current shown item was never instanced form data source")
     }
 
     private fun hideFragments(isRemoved: Boolean, case: (k: String, v: F) -> Boolean) {
@@ -225,24 +214,24 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     }
 
     private fun F.isExists(): Boolean {
-        return isAdded || fragmentManager?.findFragmentByTag(fId) != null
+        return isAdded
     }
 
     /**
      * running a transaction form manager
      * @param isHidden it may ignore with null,else it call overridden to set a transaction type
      * */
-    private fun runInTransaction(
-        isHidden: Boolean?,
-        fragment: F,
-        run: (FragmentTransaction) -> Unit
-    ) {
+    private fun runInTransaction(isHidden: Boolean?, fragment: F, run: (FragmentTransaction) -> Unit) {
         val transaction = fragmentManager.beginTransaction()
         try {
             if (isHidden != null) beginTransaction(isHidden, transaction, fragment.javaClass)
             run(transaction)
         } finally {
-            transaction.commitNowAllowingStateLoss()
+            try {
+                transaction.commitNowAllowingStateLoss()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

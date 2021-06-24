@@ -11,12 +11,11 @@ object AnnotationParser {
         val tCls = T::class.java
         try {
             for (method in clz.declaredMethods) {
-                val methodHasAno = method.isAnnotationPresent(tCls)
-                if (methodHasAno) {
+                if (method.isAnnotationPresent(tCls)) {
                     method.isAccessible = true
                     val pan = method.getAnnotation(tCls)
                     if (pan != null) {
-                        annotationSet.add(Pair(method, pan))
+                        annotationSet.add(Pair<Method, T>(method, pan))
                     }
                 }
             }
@@ -31,8 +30,7 @@ object AnnotationParser {
         val clzHasAno = clz.isAnnotationPresent(tCls)
         if (clzHasAno) {
             val annotation = clz.getAnnotation(tCls)
-            if (annotation != null)
-                return annotation
+            if (annotation != null) return annotation
         }
         return null
     }
@@ -46,8 +44,7 @@ object AnnotationParser {
             val fieldHasAno = field.isAnnotationPresent(tCls)
             if (fieldHasAno) {
                 val fieldAnnotation = field.getAnnotation(tCls)
-                if (fieldAnnotation != null)
-                    annotationSet.add(Pair(field, fieldAnnotation))
+                if (fieldAnnotation != null) annotationSet.add(Pair<Field, T>(field, fieldAnnotation))
             }
         }
         return annotationSet

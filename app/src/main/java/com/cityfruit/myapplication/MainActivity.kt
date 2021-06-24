@@ -2,10 +2,12 @@ package com.cityfruit.myapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import com.cityfruit.myapplication.indecators.*
 import com.zj.cf.fragments.ConstrainFragment
 import com.zj.cf.managers.BaseFragmentManager
+import com.zj.cf.setConstrainFragmentLifecycleCallBack
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +22,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         manager = object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, mBA, BottomB(), BottomC(), BottomD()) {
 
+        }
+        setConstrainFragmentLifecycleCallBack { lifecycle, from, s ->
+            Log.e("------ ", "cf lifecycle changed :form $from \n lifecycle = $lifecycle \n")
         }
     }
 

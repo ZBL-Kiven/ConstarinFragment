@@ -1,7 +1,6 @@
 package com.cityfruit.myapplication
 
 import android.os.Bundle
-import android.util.Log
 import com.zj.cf.fragments.BaseFragment
 import com.zj.cf.managers.FragmentHelper
 
@@ -16,5 +15,4 @@ fun getTop(manager: FragmentHelper<*>): BaseFragment? {
 }
 
 fun printBundle(b: Bundle?, isBack: Boolean) {
-    Log.e("---- bundle got :", "${if (isBack) "onFragmentResults" else "postValue"} =  ${b?.getString("a") ?: "null"}")
 }

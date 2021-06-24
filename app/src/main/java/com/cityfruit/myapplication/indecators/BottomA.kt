@@ -19,8 +19,9 @@ import kotlinx.android.synthetic.main.fragment_b.*
 
 class BottomA : BaseLinkageFragment() {
 
-    @Container
-    var container: ViewGroup? = null
+    override val fId: String; get() = "bottom_A_" + super.fId
+
+    @Container var container: ViewGroup? = null
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.fragment_b, container, false)
@@ -29,15 +30,8 @@ class BottomA : BaseLinkageFragment() {
     override fun onCreate() {
         super.onCreate()
         container = fragment_container
-        btn01.addOnClickListener {
-            container?.visibility = VISIBLE
-            startFragmentByNewTask(FragmentD::class.java, null, {
-                ToastUtils.show(context, "it is already last in stack")
-                false
-            })
+        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, TabA(), TabB(), TabC()) {
+
         }
-//        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, TabA(), TabB(), TabC()) {
-//
-//        }
     }
 }

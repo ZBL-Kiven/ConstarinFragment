@@ -13,6 +13,9 @@ import com.cityfruit.myapplication.getBundle
 import kotlinx.android.synthetic.main.bottom.*
 
 class BottomC : BaseLinkageFragment() {
+
+    override val fId: String; get() = "bottom_C" + super.fId
+
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.bottom, container, false)
     }
@@ -23,16 +26,12 @@ class BottomC : BaseLinkageFragment() {
     override fun onCreate() {
         super.onCreate()
         container = bottom_fl
-
-        container?.setOnClickListener {
-            initData()
-        }
         initData()
     }
 
     private fun initData() {
         startFragmentByNewTask(FragmentA::class.java, getBundle("bottomC 启动了 FrgA"), {
-            true
+            false
         })
     }
 }

@@ -13,20 +13,19 @@ import com.cityfruit.myapplication.getBundle
 
 class TabA : BaseLinkageFragment() {
 
+    override val fId: String; get() = "TAB_NO_SCROLL_A" + super.fId
+
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.bottom, container, false)
     }
 
-
-    @Container
-    var container: ViewGroup? = null
+    @Container var container: ViewGroup? = null
 
     override fun onCreate() {
         super.onCreate()
         container = rootView as? ViewGroup
         startFragmentByNewTask(FragmentA::class.java, getBundle("bottomB 启动了 FrgA"), {
-            ToastUtils.show(context, "it is already last in stack")
-            false
+            ToastUtils.show(context, "it is already last in stack");false
         })
     }
 }

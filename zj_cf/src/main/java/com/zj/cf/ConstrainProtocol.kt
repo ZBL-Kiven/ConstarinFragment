@@ -14,6 +14,7 @@ import com.zj.cf.fragments.BaseFragment
 import com.zj.cf.fragments.BaseLinkageFragment
 import com.zj.cf.fragments.ConstrainFragment
 import com.zj.cf.managers.ConstrainFragmentManager
+import com.zj.cf.unitive.Lifecycle
 import java.security.InvalidParameterException
 
 @Throws(InvalidParameterException::class, NullPointerException::class)
@@ -26,7 +27,6 @@ fun <T : ConstrainFragment> BaseFragment.startFragmentByNewTask(fragmentCls: Cla
     val pid = if (this is BaseLinkageFragment) fId else managerId
     startFrag(pid, this, javaClass, childFragmentManager, fragmentCls, bundle, clearWhenEmptyStack, overrideTransaction)
 }
-
 
 @Throws(InvalidParameterException::class, NullPointerException::class)
 fun <T : ConstrainFragment> FragmentActivity.startFragment(fragmentCls: Class<T>, container: ViewGroup, bundle: Bundle? = null, clearWhenEmptyStack: () -> Boolean, overrideTransaction: ((isHidden: Boolean, transaction: FragmentTransaction, curFragCls: Class<ConstrainFragment>) -> FragmentTransaction)? = null) {
@@ -60,4 +60,10 @@ private fun <T : ConstrainFragment> startFrag(fragmentId: String, container: Vie
     } catch (e: Exception) {
         e.printStackTrace()
     }
+}
+
+internal var lifecycleCallback: ((Lifecycle, String, String) -> Unit)? = null
+
+fun setConstrainFragmentLifecycleCallBack(callBack: (Lifecycle, String, String) -> Unit) {
+    lifecycleCallback = callBack
 }
