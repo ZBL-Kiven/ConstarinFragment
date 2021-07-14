@@ -121,7 +121,7 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
                             clearFragments()
                             val mid = it.getManagerId()
                             FMStore.getManagerByLevel(mid, -1)?.let { lastManager ->
-                                lastManager.getCurrentFragment()?.onFragmentResumed()
+                                lastManager.getCurrentFragment()?.resumeFragment()
                             }
                             FMStore.removeManager(mid)
                             onFinished?.invoke(true, true)

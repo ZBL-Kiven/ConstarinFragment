@@ -23,8 +23,8 @@ class BottomB : BaseLinkageFragment() {
     @Container
     var container: ViewGroup? = null
 
-    override fun onCreate() {
-        super.onCreate()
+    override fun onFragmentCreated() {
+        super.onFragmentCreated()
         container = rootView as? ViewGroup
         startFragmentByNewTask(FragmentA::class.java, getBundle("bottomB 启动了 FrgA"), {
             ToastUtils.show(context, "it is already last in stack")

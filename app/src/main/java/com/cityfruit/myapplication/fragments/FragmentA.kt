@@ -23,8 +23,8 @@ class FragmentA : ConstrainFragment() {
         return inflater.inflate(R.layout.fragment_a, container, false)
     }
 
-    override fun onCreate() {
-        super.onCreate()
+    override fun onFragmentCreated() {
+        super.onFragmentCreated()
         frgContainer = fragment_container
         a_btn_new_task?.addOnClickListener {
             startFragmentByNewTask(FragmentB::class.java, getBundle("frgA ==> frgB by new Task"), {

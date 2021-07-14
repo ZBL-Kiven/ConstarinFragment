@@ -191,7 +191,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
     private fun hideFragment(v: F?, isRemoved: Boolean, onHidden: (() -> Unit)? = null) {
         fun hide(v: F) {
-            if (isRemoved) v.onFragmentDestroy()
+            if (isRemoved) v.destroyFragment()
             runInTransaction(true, v) { it.hide(v);onHidden?.invoke() }
         }
 

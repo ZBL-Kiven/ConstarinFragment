@@ -94,21 +94,21 @@ abstract class BaseFragment : Fragment() {
     private fun performCreate() {
         if (curLifeState == Lifecycle.CREATE) {
             curLifeState = Lifecycle.CREATED
-            onCreate()
+            onFragmentCreated()
         }
     }
 
     private fun performStart() {
         if (curLifeState == Lifecycle.CREATED) {
             curLifeState = Lifecycle.START
-            onStarted()
+            onFragmentStarted()
         }
     }
 
     private fun performReStart() {
         if (curLifeState == Lifecycle.STOP && !parentHide(this)) {
             curLifeState = Lifecycle.RESTART
-            onReStart()
+            onFragmentReStart()
             performChildReStart()
         }
     }
@@ -135,7 +135,7 @@ abstract class BaseFragment : Fragment() {
 
         if (curLifeState == Lifecycle.START || curLifeState == Lifecycle.RESTART || curLifeState == Lifecycle.PAUSE) {
             curLifeState = Lifecycle.RESUME
-            onResumed() //Adjust the top of the stack and expand at the back
+            onFragmentResumed() //Adjust the top of the stack and expand at the back
             performChildResume()
         }
     }
@@ -148,7 +148,7 @@ abstract class BaseFragment : Fragment() {
         if (curLifeState == Lifecycle.RESUME) {
             curLifeState = Lifecycle.PAUSE
             performChildPause()
-            onPaused()
+            onFragmentPaused()
         }
     }
 
@@ -164,7 +164,7 @@ abstract class BaseFragment : Fragment() {
         if (curLifeState == Lifecycle.PAUSE) {
             curLifeState = Lifecycle.STOP
             performChildStop()
-            onStopped()
+            onFragmentStopped()
         }
     }
 
@@ -183,46 +183,46 @@ abstract class BaseFragment : Fragment() {
         return bf
     }
 
-    internal fun onFragmentDestroy() {
+    internal fun destroyFragment() {
         performPause()
         performStop()
-        onDestroyed()
+        onFragmentDestroyed()
     }
 
-    internal fun onFragmentResumed() {
+    internal fun resumeFragment() {
         if (isStop) {
-            onReStart()
+            onFragmentReStart()
         }
-        onResumed()
+        onFragmentResumed()
     }
 
     @CallSuper
-    protected open fun onCreate() {
+    protected open fun onFragmentCreated() {
     }
 
-    protected open fun onStarted() {
-    }
-
-    @CallSuper
-    protected open fun onReStart() {
+    protected open fun onFragmentStarted() {
     }
 
     @CallSuper
-    protected open fun onResumed() {
+    protected open fun onFragmentReStart() {
+    }
+
+    @CallSuper
+    protected open fun onFragmentResumed() {
         enableRoot(true)
     }
 
     @CallSuper
-    protected open fun onPaused() {
+    protected open fun onFragmentPaused() {
         enableRoot(false)
     }
 
     @CallSuper
-    protected open fun onStopped() {
+    protected open fun onFragmentStopped() {
     }
 
     @CallSuper
-    protected open fun onDestroyed() {
+    protected open fun onFragmentDestroyed() {
         curLifeState = Lifecycle.DESTROY
         rootView = null
     }

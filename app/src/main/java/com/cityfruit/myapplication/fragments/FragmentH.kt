@@ -23,8 +23,8 @@ class FragmentH : ConstrainFragment() {
         return inflater.inflate(R.layout.fragment_b, container, false)
     }
 
-    override fun onCreate() {
-        super.onCreate()
+    override fun onFragmentCreated() {
+        super.onFragmentCreated()
         fm = object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, TabA(), TabB(), TabC()) {
 
         }
