@@ -22,8 +22,8 @@ class BottomD : BaseLinkageFragment() {
         return inflater.inflate(R.layout.tab, container, false)
     }
 
-    override fun onFragmentStarted() {
-        super.onFragmentStarted()
+    override fun onStarted() {
+        super.onStarted()
         vp2.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         vp2.offscreenPageLimit = ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
         object : TabFragmentManager<BaseTabFragment>(requireActivity(), vp2, 0, tab, FragmentTab(), FragmentTab1(), FragmentTab2()) {

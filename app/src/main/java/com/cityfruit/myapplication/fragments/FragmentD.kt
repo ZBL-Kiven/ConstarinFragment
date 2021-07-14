@@ -31,8 +31,8 @@ class FragmentD : ConstrainFragment() {
         printBundle(bundle, false)
     }
 
-    override fun onFragmentCreated() {
-        super.onFragmentCreated()
+    override fun onCreate() {
+        super.onCreate()
         frgContainer = fragment_container
         a_btn_new_task?.addOnClickListener {
             startFragmentByNewTask(FragmentE::class.java, getBundle("frgD ==> frgE by new Task"), {

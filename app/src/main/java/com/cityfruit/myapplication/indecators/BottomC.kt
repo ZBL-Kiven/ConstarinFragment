@@ -23,8 +23,8 @@ class BottomC : BaseLinkageFragment() {
     @Container
     var container: FrameLayout? = null
 
-    override fun onFragmentCreated() {
-        super.onFragmentCreated()
+    override fun onCreate() {
+        super.onCreate()
         container = bottom_fl
         initData()
     }

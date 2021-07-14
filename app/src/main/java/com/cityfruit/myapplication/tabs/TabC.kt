@@ -23,8 +23,8 @@ class TabC : BaseLinkageFragment() {
 
     @Container var container: FrameLayout? = null
 
-    override fun onFragmentCreated() {
-        super.onFragmentCreated()
+    override fun onCreate() {
+        super.onCreate()
         container = bottom_fl
         startFragmentByNewTask(FragmentA::class.java, getBundle("bottomD 启动了 FrgA"), {
             ToastUtils.show(context, "it is already last in stack")

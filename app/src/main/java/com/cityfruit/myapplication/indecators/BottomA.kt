@@ -22,8 +22,8 @@ class BottomA : BaseLinkageFragment() {
         return inflater.inflate(R.layout.fragment_b, container, false)
     }
 
-    override fun onFragmentCreated() {
-        super.onFragmentCreated()
+    override fun onCreate() {
+        super.onCreate()
         container = fragment_container
         object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, TabA(), TabB(), TabC()) {
 
