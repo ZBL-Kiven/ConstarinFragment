@@ -7,8 +7,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.cityfruit.myapplication.R
 import com.zj.cf.fragments.BaseLinkageFragment
 import com.cityfruit.myapplication.tabs.FragmentTab
-import com.cityfruit.myapplication.tabs.FragmentTab1
-import com.cityfruit.myapplication.tabs.FragmentTab2
 import com.google.android.material.tabs.TabLayout
 import com.zj.cf.fragments.BaseTabFragment
 import com.zj.cf.managers.TabFragmentManager
@@ -26,12 +24,20 @@ class BottomD : BaseLinkageFragment() {
         super.onStarted()
         vp2.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         vp2.offscreenPageLimit = ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
-        object : TabFragmentManager<BaseTabFragment>(requireActivity(), vp2, 0, tab, FragmentTab(), FragmentTab1(), FragmentTab2()) {
-
+        val tabs = arrayListOf(TabInfo(), TabInfo(), TabInfo(), TabInfo(), TabInfo(), TabInfo(), TabInfo(), TabInfo(), TabInfo(), TabInfo())
+        object : TabFragmentManager<TabInfo, BaseTabFragment>(requireActivity(), vp2, 0, tab, *tabs.toTypedArray()) {
             override fun tabConfigurationStrategy(tab: TabLayout.Tab, position: Int) {
-                tab.text = "TAB-$position"
+                tab.text = "TAB_$position"
+            }
+
+            override fun onCreateFragment(d: TabInfo, p: Int): BaseTabFragment {
+                return FragmentTab(p)
             }
         }
+    }
+
+    class TabInfo : TabFragmentManager.TabDataIn {
+        override var fragmentId: String = ""
     }
 
 }

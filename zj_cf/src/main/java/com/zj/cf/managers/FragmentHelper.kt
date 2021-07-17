@@ -101,6 +101,10 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         }
     }
 
+    internal fun removeOnly(id: String) {
+        mFragments.remove(id)
+    }
+
     @UiThread
     internal fun removeFragmentById(id: String, onRemoved: (() -> Unit)? = null) {
         fun remove(frg: F) {

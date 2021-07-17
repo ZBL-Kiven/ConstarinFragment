@@ -22,11 +22,18 @@ import java.lang.IllegalStateException
  * used for linkage fragment tab manage, the parent properties see [BaseFragmentManager]
  */
 
-abstract class TabFragmentManager<T : BaseTabFragment>(activity: FragmentActivity, container: ViewPager2, curIndex: Int, indicatorsParent: TabLayout, vararg fragments: T?) : FragmentHelper<T>(activity, container.id) {
+abstract class TabFragmentManager<T : TabFragmentManager.TabDataIn, F : BaseTabFragment>(activity: FragmentActivity, container: ViewPager2, curIndex: Int, indicatorsParent: TabLayout, vararg data: T?) : FragmentHelper<F>(activity, container.id) {
 
     private var curSelectedId: String = ""
+    private var curData: ArrayList<T> = arrayListOf()
+    private val adapter: TabFragmentAdapter
+    private val onDestroyCallBack = { f: BaseTabFragment ->
+        removeOnly(f.fId)
+    }
 
     abstract fun tabConfigurationStrategy(tab: TabLayout.Tab, position: Int)
+    abstract fun onCreateFragment(d: T, p: Int): F
+
     open fun onPageScrollStateChanged(state: Int) {}
     open fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
@@ -40,42 +47,47 @@ abstract class TabFragmentManager<T : BaseTabFragment>(activity: FragmentActivit
         }
 
         override fun onPageSelected(position: Int) {
-            fragments[position]?.fId?.let {
+            data[position]?.fragmentId?.let {
                 curSelectedId = it
                 this@TabFragmentManager.syncSelectState(it)
             }
         }
     }
 
+    fun add(d: T?) {
+        if (d == null) return
+        curData.add(d)
+        adapter.notifyDataSetChanged()
+    }
+
+    fun remove(d: T?): Boolean {
+        val b = curData.remove(d)
+        adapter.notifyDataSetChanged()
+        return b
+    }
+
+    fun addAll(d: List<T?>?) {
+        if (d.isNullOrEmpty()) return
+        curData.addAll(d.filterNotNull())
+        adapter.notifyDataSetChanged()
+    }
+
     init {
-        val fcs = fragments.size
+        curData.addAll(data.filterNotNull())
+        val fcs = curData.size
         if (curIndex !in 0 until fcs) throw IllegalStateException("Index out of range!")
-        fragments.forEach {
-            if (it != null) {
-                val hasHome = AnnotationParser.parseCls<ConstrainHome>(it::class.java) != null
-                val hasLaunchMode = AnnotationParser.parseCls<LaunchMode>(it::class.java) != null
-                val hasConstrain = AnnotationParser.parseCls<Constrain>(it::class.java) != null
-                if (hasConstrain) {
-                    throw IllegalStateException("the base fragment manager was not supported by Constrain annotation")
-                }
-                if (hasHome) {
-                    throw IllegalStateException("the base fragment manager was not supported by ConstrainHome annotation")
-                }
-                if (hasLaunchMode) {
-                    throw IllegalStateException("the base fragment manager was not supported by LaunchMode annotation")
-                }
-                FMStore.putAManager(it.managerId, this, it.fId)
-            }
+        adapter = TabFragmentAdapter(activity) { curData }
+        (0..curIndex).forEach {
+            val f = adapter.initFrags(it, true)
+            if (curIndex == it) curSelectedId = f.fId
         }
-        addFragment(*fragments)
-        container.adapter = TabFragmentAdapter(activity) { getFragments() ?: arrayListOf() }
+        container.adapter = adapter
         TabLayoutMediator(indicatorsParent, container, ::tabConfigurationStrategy).attach()
-        curSelectedId = fragments[curIndex]?.fId ?: ""
         container.currentItem = curIndex
         container.registerOnPageChangeCallback(pageChangeListener)
     }
 
-    override fun getCurrentFragment(): T? {
+    override fun getCurrentFragment(): F? {
         return getFragmentById(curSelectedId)
     }
 
@@ -83,18 +95,53 @@ abstract class TabFragmentManager<T : BaseTabFragment>(activity: FragmentActivit
         return curSelectedId
     }
 
-    override fun beginTransaction(isHidden: Boolean, transaction: FragmentTransaction, frgCls: Class<T>) {
+    override fun beginTransaction(isHidden: Boolean, transaction: FragmentTransaction, frgCls: Class<F>) {
         transaction.setTransition(FragmentTransaction.TRANSIT_NONE)
     }
 
-    inner class TabFragmentAdapter<T : BaseTabFragment>(activity: FragmentActivity, private val fIn: () -> List<T>) : FragmentStateAdapter(activity) {
+    /**
+     * use it when context is activity.
+     *
+     * but no if you started it by a ConstrainFragment context.
+     * */
+    fun clear() {
+        FMStore.removeManager(this.managerId)
+    }
+
+    inner class TabFragmentAdapter(activity: FragmentActivity, private val fIn: () -> List<T>) : FragmentStateAdapter(activity) {
 
         override fun getItemCount(): Int {
             return fIn().size
         }
 
-        override fun createFragment(position: Int): T {
-            return fIn()[position]
+        override fun createFragment(position: Int): F {
+            return initFrags(position)
         }
+
+        fun initFrags(position: Int, needsToUpdateStore: Boolean = false): F {
+            val d = fIn()[position]
+            val f = this@TabFragmentManager.onCreateFragment(d, position)
+            d.fragmentId = f.fId
+            val hasHome = AnnotationParser.parseCls<ConstrainHome>(f::class.java) != null
+            val hasLaunchMode = AnnotationParser.parseCls<LaunchMode>(f::class.java) != null
+            val hasConstrain = AnnotationParser.parseCls<Constrain>(f::class.java) != null
+            if (hasConstrain) {
+                throw IllegalStateException("the base fragment manager was not supported by Constrain annotation")
+            }
+            if (hasHome) {
+                throw IllegalStateException("the base fragment manager was not supported by ConstrainHome annotation")
+            }
+            if (hasLaunchMode) {
+                throw IllegalStateException("the base fragment manager was not supported by LaunchMode annotation")
+            }
+            addFragment(f)
+            f.setOnDestroyCallback(onDestroyCallBack)
+            if (needsToUpdateStore) FMStore.putAManager(f.managerId, this@TabFragmentManager, f.fId)
+            return f
+        }
+    }
+
+    interface TabDataIn {
+        var fragmentId: String
     }
 }

@@ -119,7 +119,8 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    open fun performResume() { //Prevent all Fragment of Activity resume from getting focus
+    open fun performResume() {
+        //Prevent all Fragment of Activity resume from getting focus
         if (parentHide(this)) {
             return
         }
@@ -135,7 +136,8 @@ abstract class BaseFragment : Fragment() {
 
         if (curLifeState == Lifecycle.START || curLifeState == Lifecycle.RESTART || curLifeState == Lifecycle.PAUSE) {
             curLifeState = Lifecycle.RESUME
-            onResumed() //Adjust the top of the stack and expand at the back
+            onResumed()
+            //Adjust the top of the stack and expand at the back
             performChildResume()
         }
     }
