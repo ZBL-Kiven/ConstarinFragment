@@ -4,6 +4,7 @@ import com.zj.cf.fragments.BaseFragment
 import com.zj.cf.managers.BaseFragmentManager
 import com.zj.cf.managers.ConstrainFragmentManager
 import com.zj.cf.managers.FragmentHelper
+import com.zj.cf.managers.TabFragmentManager
 import com.zj.cf.unitive.ManagerInfo
 import java.lang.IllegalArgumentException
 import java.lang.StringBuilder
@@ -50,6 +51,17 @@ internal object FMStore {
                 }
             }
 
+            fun removeTabManager(manager: TabFragmentManager<*,*>, nextId: String? = null) {
+                nextId?.let { n -> removeList.add(n) }
+                manager.getFragmentIds()?.forEach { s ->
+                    manager.removeFragmentById(s)
+                    managers[s]?.let { m2 ->
+                        removeList.add(s)
+                        remove(m2.nextId, layer + 1)
+                    }
+                }
+            }
+
             fun removeConstrainManager(manager: ConstrainFragmentManager, nextId: String? = null) {
                 manager.getFragmentIds()?.forEach {
                     manager.removeFragmentById(it)
@@ -65,6 +77,9 @@ internal object FMStore {
                     }
                     is ConstrainFragmentManager -> {
                         removeConstrainManager(it.manager, it.nextId)
+                    }
+                    is TabFragmentManager<*, *> -> {
+                        removeTabManager(it.manager, it.nextId)
                     }
                     else -> throw IllegalArgumentException("unknown type formatted !!")
                 }

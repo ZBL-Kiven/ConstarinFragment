@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.tab.*
 class BottomD : BaseLinkageFragment() {
 
     override val fId: String; get() = "bottom_D" + super.fId
+    private var manager: TabFragmentManager<*, *>? = null
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.tab, container, false)
@@ -24,20 +25,20 @@ class BottomD : BaseLinkageFragment() {
         super.onStarted()
         vp2.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         vp2.offscreenPageLimit = ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
-        val tabs = arrayListOf(TabInfo(), TabInfo(), TabInfo(), TabInfo(), TabInfo(), TabInfo(), TabInfo(), TabInfo(), TabInfo(), TabInfo())
-        object : TabFragmentManager<TabInfo, BaseTabFragment>(requireActivity(), vp2, 0, tab, *tabs.toTypedArray()) {
+        val tabs = arrayListOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+        manager = object : TabFragmentManager<Int, BaseTabFragment>(requireActivity(), vp2, 0, tab, *tabs.toTypedArray()) {
             override fun tabConfigurationStrategy(tab: TabLayout.Tab, position: Int) {
                 tab.text = "TAB_$position"
             }
 
-            override fun onCreateFragment(d: TabInfo, p: Int): BaseTabFragment {
+            override fun onCreateFragment(d: Int, p: Int): BaseTabFragment {
                 return FragmentTab(p)
             }
         }
     }
 
-    class TabInfo : TabFragmentManager.TabDataIn {
-        override var fragmentId: String = ""
+    override fun onStopped() {
+        super.onStopped()
+        manager?.clear()
     }
-
 }

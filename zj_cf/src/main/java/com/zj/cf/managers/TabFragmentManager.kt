@@ -22,10 +22,11 @@ import java.lang.IllegalStateException
  * used for linkage fragment tab manage, the parent properties see [BaseFragmentManager]
  */
 
-abstract class TabFragmentManager<T : TabFragmentManager.TabDataIn, F : BaseTabFragment>(activity: FragmentActivity, container: ViewPager2, curIndex: Int, indicatorsParent: TabLayout, vararg data: T?) : FragmentHelper<F>(activity, container.id) {
+@Suppress("MemberVisibilityCanBePrivate")
+abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActivity, container: ViewPager2, curIndex: Int, indicatorsParent: TabLayout, vararg data: T?) : FragmentHelper<F>(activity, container.id) {
 
-    private var curSelectedId: String = ""
-    private var curData: ArrayList<T> = arrayListOf()
+    protected var curSelectedId: String = ""
+    private var curData: ArrayList<DataWrapInfo> = arrayListOf()
     private val adapter: TabFragmentAdapter
     private val onDestroyCallBack = { f: BaseTabFragment ->
         removeOnly(f.fId)
@@ -47,36 +48,39 @@ abstract class TabFragmentManager<T : TabFragmentManager.TabDataIn, F : BaseTabF
         }
 
         override fun onPageSelected(position: Int) {
-            data[position]?.fragmentId?.let {
-                curSelectedId = it
-                this@TabFragmentManager.syncSelectState(it)
-            }
+            val fid = getCurData()[position].fid
+            curSelectedId = fid
+            this@TabFragmentManager.syncSelectState(fid)
         }
     }
 
     fun add(d: T?) {
         if (d == null) return
-        curData.add(d)
+        curData.add(DataWrapInfo(d))
         adapter.notifyDataSetChanged()
     }
 
     fun remove(d: T?): Boolean {
-        val b = curData.remove(d)
+        val b = curData.removeAll { it.d == d }
         adapter.notifyDataSetChanged()
         return b
     }
 
     fun addAll(d: List<T?>?) {
         if (d.isNullOrEmpty()) return
-        curData.addAll(d.filterNotNull())
+        curData.addAll(d.mapNotNull { if (it != null) DataWrapInfo(it) else null })
         adapter.notifyDataSetChanged()
     }
 
+    fun getCurData(): List<DataWrapInfo> {
+        return curData
+    }
+
     init {
-        curData.addAll(data.filterNotNull())
+        adapter = TabFragmentAdapter(activity, ::getCurData)
+        addAll(data.asList())
         val fcs = curData.size
         if (curIndex !in 0 until fcs) throw IllegalStateException("Index out of range!")
-        adapter = TabFragmentAdapter(activity) { curData }
         (0..curIndex).forEach {
             val f = adapter.initFrags(it, true)
             if (curIndex == it) curSelectedId = f.fId
@@ -108,7 +112,7 @@ abstract class TabFragmentManager<T : TabFragmentManager.TabDataIn, F : BaseTabF
         FMStore.removeManager(this.managerId)
     }
 
-    inner class TabFragmentAdapter(activity: FragmentActivity, private val fIn: () -> List<T>) : FragmentStateAdapter(activity) {
+    inner class TabFragmentAdapter(activity: FragmentActivity, private val fIn: () -> List<DataWrapInfo>) : FragmentStateAdapter(activity) {
 
         override fun getItemCount(): Int {
             return fIn().size
@@ -120,8 +124,8 @@ abstract class TabFragmentManager<T : TabFragmentManager.TabDataIn, F : BaseTabF
 
         fun initFrags(position: Int, needsToUpdateStore: Boolean = false): F {
             val d = fIn()[position]
-            val f = this@TabFragmentManager.onCreateFragment(d, position)
-            d.fragmentId = f.fId
+            val f = this@TabFragmentManager.onCreateFragment(d.d, position)
+            d.fid = f.fId
             val hasHome = AnnotationParser.parseCls<ConstrainHome>(f::class.java) != null
             val hasLaunchMode = AnnotationParser.parseCls<LaunchMode>(f::class.java) != null
             val hasConstrain = AnnotationParser.parseCls<Constrain>(f::class.java) != null
@@ -141,7 +145,5 @@ abstract class TabFragmentManager<T : TabFragmentManager.TabDataIn, F : BaseTabF
         }
     }
 
-    interface TabDataIn {
-        var fragmentId: String
-    }
+    inner class DataWrapInfo(val d: T, var fid: String = "")
 }
