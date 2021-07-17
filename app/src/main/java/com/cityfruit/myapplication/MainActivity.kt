@@ -31,8 +31,10 @@ class MainActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             manager?.let {
-                (getTop(it) as? ConstrainFragment)?.finish()
-                return false
+                (getTop(it) as? ConstrainFragment)?.let { cf ->
+                    cf.finish()
+                    return false
+                }
             }
         }
         return super.onKeyDown(keyCode, event)

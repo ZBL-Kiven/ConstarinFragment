@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.zj.cf.FMStore
 import com.zj.cf.fragments.BaseFragment
+import com.zj.cf.fragments.BaseLinkageFragment
+import com.zj.cf.fragments.BaseTabFragment
 import com.zj.cf.fragments.ConstrainFragment
 import com.zj.cf.unitive.FragmentObserver
 import com.zj.cf.unitive.FragmentOperator
@@ -27,7 +29,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
     constructor(fragment: BaseFragment, containId: Int) : this(if (fragment is ConstrainFragment) fragment.managerId else fragment.fId, fragment.childFragmentManager, containId)
 
-    constructor(act: FragmentActivity, containId: Int) : this("", act.supportFragmentManager, containId)
+    constructor(act: FragmentActivity, containId: Int) : this(UUID.randomUUID().toString(), act.supportFragmentManager, containId)
 
     constructor(managerId: String, f: FragmentManager, c: Int) {
         FMStore.putAManager(managerId, getManager());fragmentManager = f;containId = c
@@ -88,12 +90,12 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     }
 
     @UiThread
-    fun addFragment(vararg fragment: F?) {
+    internal fun addFragment(vararg fragment: F?) {
         addFragments(fragment.filterNotNull().toList())
     }
 
     @UiThread
-    fun addFragments(fragments: List<F>?) {
+    internal fun addFragments(fragments: List<F>?) {
         if (!fragments.isNullOrEmpty()) fragments.forEach {
             mFragments[it.fId] = it.apply {
                 this.managerId = this@FragmentHelper.managerId
@@ -102,7 +104,10 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     }
 
     internal fun removeOnly(id: String) {
-        mFragments.remove(id)
+        val f = mFragments.remove(id)
+        if (f is BaseTabFragment || f is BaseLinkageFragment) {
+            FMStore.removeManageWithFrgId(id)
+        }
     }
 
     @UiThread

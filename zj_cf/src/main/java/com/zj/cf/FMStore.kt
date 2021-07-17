@@ -51,7 +51,7 @@ internal object FMStore {
                 }
             }
 
-            fun removeTabManager(manager: TabFragmentManager<*,*>, nextId: String? = null) {
+            fun removeTabManager(manager: TabFragmentManager<*, *>, nextId: String? = null) {
                 nextId?.let { n -> removeList.add(n) }
                 manager.getFragmentIds()?.forEach { s ->
                     manager.removeFragmentById(s)
@@ -89,6 +89,14 @@ internal object FMStore {
         removeList.forEach {
             managers.remove(it)
         }
+    }
+
+    fun removeManageWithFrgId(fid: String) {
+        managers.remove(fid)
+    }
+
+    fun hasManager(managerId: String): Boolean {
+        return managers.containsKey(managerId)
     }
 
     fun getManagerByLevel(managerId: String?, level: Int): FragmentHelper<*>? {

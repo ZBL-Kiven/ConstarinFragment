@@ -14,7 +14,7 @@ import com.zj.cf.annotations.ConstrainHome
 import com.zj.cf.annotations.LaunchMode
 import com.zj.cf.annotations.parser.AnnotationParser
 import com.zj.cf.fragments.BaseTabFragment
-import java.lang.IllegalStateException
+import java.lang.IllegalArgumentException
 
 /**
  * created by zjj on 21.06.23
@@ -23,11 +23,12 @@ import java.lang.IllegalStateException
  */
 
 @Suppress("MemberVisibilityCanBePrivate")
-abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActivity, container: ViewPager2, curIndex: Int, indicatorsParent: TabLayout, vararg data: T?) : FragmentHelper<F>(activity, container.id) {
+abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActivity, private val container: ViewPager2, curIndex: Int, indicatorsParent: TabLayout, vararg data: T?) : FragmentHelper<F>(activity, -1) {
 
     protected var curSelectedId: String = ""
     private var curData: ArrayList<DataWrapInfo> = arrayListOf()
     private val adapter: TabFragmentAdapter
+    private var tlm: TabLayoutMediator? = null
     private val onDestroyCallBack = { f: BaseTabFragment ->
         removeOnly(f.fId)
     }
@@ -82,11 +83,12 @@ abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActi
         val fcs = curData.size
         if (curIndex !in 0 until fcs) throw IllegalStateException("Index out of range!")
         (0..curIndex).forEach {
-            val f = adapter.initFrags(it, true)
+            val f = adapter.initFrags(it)
             if (curIndex == it) curSelectedId = f.fId
         }
         container.adapter = adapter
-        TabLayoutMediator(indicatorsParent, container, ::tabConfigurationStrategy).attach()
+        tlm = TabLayoutMediator(indicatorsParent, container, ::tabConfigurationStrategy)
+        tlm?.attach()
         container.currentItem = curIndex
         container.registerOnPageChangeCallback(pageChangeListener)
     }
@@ -110,6 +112,13 @@ abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActi
      * */
     fun clear() {
         FMStore.removeManager(this.managerId)
+        tlm?.detach()
+        clearFragments()
+        curData.clear()
+        adapter.notifyDataSetChanged()
+        container.unregisterOnPageChangeCallback(pageChangeListener)
+        container.removeAllViews()
+        tlm = null
     }
 
     inner class TabFragmentAdapter(activity: FragmentActivity, private val fIn: () -> List<DataWrapInfo>) : FragmentStateAdapter(activity) {
@@ -119,10 +128,11 @@ abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActi
         }
 
         override fun createFragment(position: Int): F {
-            return initFrags(position)
+            return if (FMStore.hasManager(this@TabFragmentManager.managerId)) initFrags(position)
+            else throw IllegalArgumentException("new TabFragment should not create after manager destroyed!!")
         }
 
-        fun initFrags(position: Int, needsToUpdateStore: Boolean = false): F {
+        fun initFrags(position: Int): F {
             val d = fIn()[position]
             val f = this@TabFragmentManager.onCreateFragment(d.d, position)
             d.fid = f.fId
@@ -140,7 +150,7 @@ abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActi
             }
             addFragment(f)
             f.setOnDestroyCallback(onDestroyCallBack)
-            if (needsToUpdateStore) FMStore.putAManager(f.managerId, this@TabFragmentManager, f.fId)
+            FMStore.putAManager(f.managerId, this@TabFragmentManager, f.fId)
             return f
         }
     }
