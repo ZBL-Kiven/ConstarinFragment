@@ -6,20 +6,4 @@ abstract class BaseTabFragment : BaseFragment() {
      * it must be ensured that the FID produced by each instance is unique.
      */
     override val fId: String; get() = super.fId
-    private var onDestroyListener: ((frag: BaseTabFragment) -> Unit)? = null
-
-    override fun onDestroyView() {
-        onDestroyed()
-        super.onDestroyView()
-    }
-
-    override fun onDestroyed() {
-        onDestroyListener?.invoke(this)
-        onDestroyListener = null
-        super.onDestroyed()
-    }
-
-    internal fun setOnDestroyCallback(onDestroyListener: ((BaseTabFragment) -> Unit)?) {
-        this.onDestroyListener = onDestroyListener
-    }
 }

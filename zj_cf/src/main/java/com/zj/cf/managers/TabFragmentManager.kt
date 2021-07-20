@@ -29,9 +29,6 @@ abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActi
     private var curData: ArrayList<DataWrapInfo> = arrayListOf()
     private val adapter: TabFragmentAdapter
     private var tlm: TabLayoutMediator? = null
-    private val onDestroyCallBack = { f: BaseTabFragment ->
-        removeOnly(f.fId)
-    }
 
     abstract fun tabConfigurationStrategy(tab: TabLayout.Tab, position: Int)
     abstract fun onCreateFragment(d: T, p: Int): F
@@ -149,7 +146,6 @@ abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActi
                 throw IllegalStateException("the base fragment manager was not supported by LaunchMode annotation")
             }
             addFragment(f)
-            f.setOnDestroyCallback(onDestroyCallBack)
             FMStore.putAManager(f.managerId, this@TabFragmentManager, f.fId)
             return f
         }

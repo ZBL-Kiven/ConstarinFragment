@@ -1,5 +1,6 @@
 package com.cityfruit.myapplication.indecators
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,8 +38,7 @@ class BottomD : BaseLinkageFragment() {
         }
     }
 
-    override fun onStopped() {
-        super.onStopped()
-        manager?.clear()
+    override fun onDestroyed() {
+        super.onDestroyed()
     }
 }

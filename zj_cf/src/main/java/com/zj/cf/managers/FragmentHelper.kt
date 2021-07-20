@@ -13,9 +13,8 @@ import com.zj.cf.fragments.BaseTabFragment
 import com.zj.cf.fragments.ConstrainFragment
 import com.zj.cf.unitive.FragmentObserver
 import com.zj.cf.unitive.FragmentOperator
-import java.lang.Exception
+import java.lang.ref.WeakReference
 import java.util.*
-import java.lang.NullPointerException
 
 /**
  * Created by zjj on 19.05.14
@@ -24,25 +23,28 @@ import java.lang.NullPointerException
 abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
     open val managerId: String = UUID.randomUUID().toString()
-    private val fragmentManager: FragmentManager
+    private val fragmentManager: WeakReference<FragmentManager>
     private val containId: Int
+    private var currentItem = ""
+    private var oldItem = ""
+    private var fragmentObserver: FragmentObserver? = null
+    protected val mFragments = mutableMapOf<String, F>()
+    private val onDestroyCallBack = { f: BaseFragment ->
+        removeOnly(f.fId)
+        checkHasAnyFragment(f.fId)
+    }
 
     constructor(fragment: BaseFragment, containId: Int) : this(if (fragment is ConstrainFragment) fragment.managerId else fragment.fId, fragment.childFragmentManager, containId)
 
-    constructor(act: FragmentActivity, containId: Int) : this(UUID.randomUUID().toString(), act.supportFragmentManager, containId)
+    constructor(act: FragmentActivity, containId: Int) : this(UUID.randomUUID().toString(), if (!act.isFinishing) act.supportFragmentManager else throw IllegalArgumentException("can not create an fragmentManager with a destroyed context!"), containId)
 
     constructor(managerId: String, f: FragmentManager, c: Int) {
-        FMStore.putAManager(managerId, getManager());fragmentManager = f;containId = c
+        FMStore.putAManager(managerId, getManager());fragmentManager = WeakReference(f);containId = c
     }
 
     private fun getManager(): FragmentHelper<*> {
         return this
     }
-
-    private var currentItem = ""
-    private var oldItem = ""
-    private var fragmentObserver: FragmentObserver? = null
-    protected val mFragments = mutableMapOf<String, F>()
 
     open fun getCurrentItemId(): String {
         return currentItem
@@ -94,10 +96,15 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         addFragments(fragment.filterNotNull().toList())
     }
 
+    /**
+     * This method is necessary to add instances to the mFragments cache. [BaseFragment.setOnDestroyCallback]
+     * Otherwise,the Manager may not reclaim and cause memory leaks.
+     * */
     @UiThread
     internal fun addFragments(fragments: List<F>?) {
         if (!fragments.isNullOrEmpty()) fragments.forEach {
             mFragments[it.fId] = it.apply {
+                it.setOnDestroyCallback(onDestroyCallBack)
                 this.managerId = this@FragmentHelper.managerId
             }
         }
@@ -108,6 +115,10 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         if (f is BaseTabFragment || f is BaseLinkageFragment) {
             FMStore.removeManageWithFrgId(id)
         }
+    }
+
+    internal fun isAttached(): Boolean {
+        return fragmentManager.get() != null
     }
 
     @UiThread
@@ -222,6 +233,10 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         return true
     }
 
+    open fun checkHasAnyFragment(finishedFId: String) {
+        if (mFragments.isEmpty()) FMStore.removeManager(managerId)
+    }
+
     private fun F.isExists(): Boolean {
         return isAdded
     }
@@ -231,7 +246,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
      * @param isHidden it may ignore with null,else it call overridden to set a transaction type
      * */
     private fun runInTransaction(isHidden: Boolean?, fragment: F, run: (FragmentTransaction) -> Unit) {
-        val transaction = fragmentManager.beginTransaction()
+        val transaction = fragmentManager.get()?.beginTransaction() ?: return
         try {
             if (isHidden != null) beginTransaction(isHidden, transaction, fragment.javaClass)
             run(transaction)

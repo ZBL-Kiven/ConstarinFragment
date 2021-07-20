@@ -25,8 +25,8 @@ class BottomA : BaseLinkageFragment() {
     override fun onCreate() {
         super.onCreate()
         container = fragment_container
-        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, TabA(), TabB(), TabC()) {
-
-        }
+//        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, TabA(), TabB(), TabC()) {
+//
+//        }
     }
 }

@@ -9,7 +9,7 @@ import com.zj.cf.unitive.ManagerInfo
 import java.lang.IllegalArgumentException
 import java.lang.StringBuilder
 
-internal object FMStore {
+object FMStore {
 
     private val managers = mutableMapOf<String, ManagerInfo<*>>()
 
@@ -30,6 +30,11 @@ internal object FMStore {
         } else {
             val managerInfo = ManagerInfo("", curManagerId, manager)
             managers[key] = managerInfo
+        }
+        try {
+            initLifecycle()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
         }
         println("a-----  key  =  $key   mid = ${manager.managerId}")
     }
@@ -176,9 +181,10 @@ internal object FMStore {
             val total = managers.size
             val sb = StringBuilder("{").append("\"totalManagers\":${total},\"fgs\":[")
             managers.forEach { (k, v) ->
-                sb.append("{\"k\":$k,\"v\":$v},\n")
+                val vs = "{\"mId\":\"${v.manager.managerId}\",\"pid\":\"${v.pId}\",\"nextId\":\"${v.nextId}\"}"
+                sb.append("{\"k\":\"$k\",\"v\":$vs},\n")
             }
-            sb.removeSuffix(",")
+            if (sb.endsWith(",")) sb.delete(sb.length - 1, sb.length)
             sb.append("]}")
             return sb.toString()
         } catch (e: java.lang.Exception) {
@@ -224,6 +230,11 @@ internal object FMStore {
         } catch (e: Exception) {
             throw NullPointerException("can't parsed the fragment fId, may fId $id was wrong form generate")
         }
+    }
+
+
+    private fun initLifecycle() {
+
     }
 }
 

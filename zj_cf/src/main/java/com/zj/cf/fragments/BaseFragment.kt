@@ -23,6 +23,11 @@ abstract class BaseFragment : Fragment() {
     internal var managerId: String = ""
     var rootView: View? = null
     var removing = false
+    private var onDestroyListener: ((frag: BaseFragment) -> Unit)? = null
+    internal fun setOnDestroyCallback(onDestroyListener: ((BaseFragment) -> Unit)?) {
+        this.onDestroyListener = onDestroyListener
+    }
+
     private var curLifeState = Lifecycle.NONE
         set(value) {
             field = value
@@ -119,8 +124,7 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    open fun performResume() {
-        //Prevent all Fragment of Activity resume from getting focus
+    open fun performResume() { //Prevent all Fragment of Activity resume from getting focus
         if (parentHide(this)) {
             return
         }
@@ -136,8 +140,7 @@ abstract class BaseFragment : Fragment() {
 
         if (curLifeState == Lifecycle.START || curLifeState == Lifecycle.RESTART || curLifeState == Lifecycle.PAUSE) {
             curLifeState = Lifecycle.RESUME
-            onResumed()
-            //Adjust the top of the stack and expand at the back
+            onResumed() //Adjust the top of the stack and expand at the back
             performChildResume()
         }
     }
@@ -228,6 +231,8 @@ abstract class BaseFragment : Fragment() {
     protected open fun onDestroyed() {
         curLifeState = Lifecycle.DESTROY
         rootView = null
+        onDestroyListener?.invoke(this)
+        onDestroyListener = null
     }
 
     final override fun onCreate(savedInstanceState: Bundle?) {
@@ -261,6 +266,11 @@ abstract class BaseFragment : Fragment() {
     final override fun onStop() {
         super.onStop()
         performStop()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        destroyFragment()
     }
 
     final override fun onDestroy() {
