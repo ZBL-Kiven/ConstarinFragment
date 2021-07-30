@@ -32,13 +32,14 @@ class BottomD : BaseLinkageFragment() {
                 tab.text = "TAB_$position"
             }
 
+            override fun syncSelectState(selectId: String) {
+                super.syncSelectState(selectId)
+                Log.e("------ ", "onSync   $selectId")
+            }
+
             override fun onCreateFragment(d: Int, p: Int): BaseTabFragment {
                 return FragmentTab(p)
             }
         }
-    }
-
-    override fun onDestroyed() {
-        super.onDestroyed()
     }
 }

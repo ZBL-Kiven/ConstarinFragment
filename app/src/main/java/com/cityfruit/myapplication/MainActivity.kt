@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         }
         setConstrainFragmentLifecycleCallBack { lifecycle, from, s ->
             main_frg.text = s
-            Log.e("------ ", "cf lifecycle changed :form $from \n lifecycle = $lifecycle \n")
+//            Log.e("------ ", "cf lifecycle changed :form $from \n lifecycle = $lifecycle \n")
         }
     }
 }

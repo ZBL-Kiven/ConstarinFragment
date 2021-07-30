@@ -46,10 +46,19 @@ abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActi
         }
 
         override fun onPageSelected(position: Int) {
-            val fid = getCurData()[position].fid
-            curSelectedId = fid
-            this@TabFragmentManager.syncSelectState(fid)
+            val d = getCurData()[position]
+            val fid = d.fid
+            if (fid.isNotEmpty()) {
+                curSelectedId = fid
+                this@TabFragmentManager.syncSelectState(fid)
+            } else {
+                d.fid = warpPendingFid(position)
+            }
         }
+    }
+
+    private fun warpPendingFid(position: Int): String {
+        return "WAITING_FOR_PENDING_$position"
     }
 
     fun add(d: T?) {
@@ -132,7 +141,7 @@ abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActi
         fun initFrags(position: Int): F {
             val d = fIn()[position]
             val f = this@TabFragmentManager.onCreateFragment(d.d, position)
-            d.fid = f.fId
+            val reSyncNeeded = warpPendingFid(position) == d.fid
             val hasHome = AnnotationParser.parseCls<ConstrainHome>(f::class.java) != null
             val hasLaunchMode = AnnotationParser.parseCls<LaunchMode>(f::class.java) != null
             val hasConstrain = AnnotationParser.parseCls<Constrain>(f::class.java) != null
@@ -147,6 +156,11 @@ abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActi
             }
             addFragment(f)
             FMStore.putAManager(f.managerId, this@TabFragmentManager, f.fId)
+            d.fid = f.fId
+            if (reSyncNeeded) {
+                curSelectedId = f.fId
+                this@TabFragmentManager.syncSelectState(f.fId)
+            }
             return f
         }
     }
