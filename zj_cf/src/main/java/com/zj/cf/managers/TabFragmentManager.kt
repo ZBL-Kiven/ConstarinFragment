@@ -111,6 +111,11 @@ abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActi
         transaction.setTransition(FragmentTransaction.TRANSIT_NONE)
     }
 
+    override fun removeOnly(id: String) {
+        super.removeOnly(id)
+        curData.forEach { if (id.isNotEmpty() && it.fid == id) it.fid = "" }
+    }
+
     /**
      * use it when context is activity.
      *

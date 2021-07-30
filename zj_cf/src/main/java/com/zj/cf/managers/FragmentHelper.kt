@@ -110,7 +110,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         }
     }
 
-    internal fun removeOnly(id: String) {
+    internal open fun removeOnly(id: String) {
         val f = mFragments.remove(id)
         if (f is BaseTabFragment || f is BaseLinkageFragment) {
             FMStore.removeManageWithFrgId(id)
