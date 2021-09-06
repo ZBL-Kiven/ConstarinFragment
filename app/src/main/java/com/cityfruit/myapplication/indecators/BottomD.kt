@@ -36,7 +36,7 @@ class BottomD : BaseLinkageFragment() {
                 super.syncSelectState(selectId)
                 Log.e("------ ", "onSync   $selectId   ${getFragmentById(selectId)}")
             }
-
+            
             override fun onCreateFragment(d: Int, p: Int): BaseTabFragment {
                 return FragmentTab(p)
             }
