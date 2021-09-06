@@ -201,33 +201,26 @@ abstract class BaseFragment : Fragment() {
         onResumed()
     }
 
-    @CallSuper
     protected open fun onCreate() {
     }
 
-    @CallSuper
     protected open fun onStarted() {
     }
 
-    @CallSuper
     protected open fun onReStart() {
     }
 
-    @CallSuper
     protected open fun onResumed() {
         enableRoot(true)
     }
 
-    @CallSuper
     protected open fun onPaused() {
         enableRoot(false)
     }
 
-    @CallSuper
     protected open fun onStopped() {
     }
 
-    @CallSuper
     protected open fun onDestroyed() {
         curLifeState = Lifecycle.DESTROY
         rootView = null
