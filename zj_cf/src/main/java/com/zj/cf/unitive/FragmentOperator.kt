@@ -12,7 +12,7 @@ interface FragmentOperator<F : BaseFragment> {
 
     fun syncSelectState(selectId: String)
 
-    fun whenShowSameFragment(shownId: String)
+    fun whenShowSameFragment(formUser: Boolean, shownId: String)
 
-    fun whenShowNotSameFragment(shownId: String, lastId: String): Boolean
+    fun whenShowNotSameFragment(formUser: Boolean, shownId: String, lastId: String): Boolean
 }

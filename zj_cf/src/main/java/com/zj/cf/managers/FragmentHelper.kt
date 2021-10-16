@@ -161,11 +161,11 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
      * @param showId the shown fragment fId
      */
     @UiThread
-    fun showFragment(showId: String) {
+    fun showFragment(showId: String, formUser: Boolean = false) {
         if (showId == currentItem) {
-            whenShowSameFragment(showId)
+            whenShowSameFragment(formUser, showId)
         } else {
-            if (whenShowNotSameFragment(showId, currentItem)) {
+            if (whenShowNotSameFragment(formUser, showId, currentItem)) {
                 currentItem = showId
                 performSelectItem()
             }
@@ -227,9 +227,9 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
     override fun syncSelectState(selectId: String) {}
 
-    override fun whenShowSameFragment(shownId: String) {}
+    override fun whenShowSameFragment(formUser: Boolean, shownId: String) {}
 
-    override fun whenShowNotSameFragment(shownId: String, lastId: String): Boolean {
+    override fun whenShowNotSameFragment(formUser: Boolean, shownId: String, lastId: String): Boolean {
         return true
     }
 

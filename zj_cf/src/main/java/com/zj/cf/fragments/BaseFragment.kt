@@ -3,7 +3,6 @@
 package com.zj.cf.fragments
 
 import android.os.Bundle
-import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View

@@ -94,15 +94,16 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
             attachView(v)
         }
         addFragments(fragments)
-        show(curItem)
+        show(curItem, true)
     }
 
     private fun attachView(v: View?) {
         v?.let { onViewAttach(it) }
     }
 
-    private fun show(curItem: String) {
-        showFragment(curItem)
+    @Suppress("SameParameterValue")
+    private fun show(curItem: String, fromUser: Boolean) {
+        showFragment(curItem, fromUser)
         getFragments()?.forEach { frg ->
             frg.linkageView?.setOnClickListener {
                 showFragment(frg.fId)
