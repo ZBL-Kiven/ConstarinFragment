@@ -94,7 +94,7 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
             attachView(v)
         }
         addFragments(fragments)
-        show(curItem, true)
+        show(curItem, false)
     }
 
     private fun attachView(v: View?) {

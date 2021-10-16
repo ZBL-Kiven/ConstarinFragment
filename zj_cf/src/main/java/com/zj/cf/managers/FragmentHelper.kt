@@ -161,7 +161,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
      * @param showId the shown fragment fId
      */
     @UiThread
-    fun showFragment(showId: String, formUser: Boolean = false) {
+    fun showFragment(showId: String, formUser: Boolean = true) {
         if (showId == currentItem) {
             whenShowSameFragment(formUser, showId)
         } else {
