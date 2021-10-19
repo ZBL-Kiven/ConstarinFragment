@@ -200,7 +200,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
                     onShown?.invoke(frg.fId)
                 }
             }
-        } ?: throw NullPointerException("bad call ! ,case : your current shown item was never instanced form data source")
+        }
     }
 
     private fun hideFragments(isRemoved: Boolean, case: (k: String, v: F) -> Boolean) {

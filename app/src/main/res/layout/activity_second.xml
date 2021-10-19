@@ -47,23 +47,23 @@
             android:padding="10dp"
             android:text=" 2 " />
 
-<!--        <TextView-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="1"-->
-<!--            android:background="@drawable/bg_01"-->
-<!--            android:gravity="center"-->
-<!--            android:padding="10dp"-->
-<!--            android:text=" 3 " />-->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_01"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text=" 3 " />
 
-<!--        <TextView-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="1"-->
-<!--            android:background="@drawable/bg_01"-->
-<!--            android:gravity="center"-->
-<!--            android:padding="10dp"-->
-<!--            android:text=" 4 " />-->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_01"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text=" 4 " />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

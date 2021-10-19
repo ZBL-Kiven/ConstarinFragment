@@ -23,10 +23,9 @@ class SecondAct : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val mBA = BottomA()
         setContentView(R.layout.activity_second)
-        manager = object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, mBA, BottomD()) {}
+        manager = object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, mBA, BottomB(), BottomC(), BottomD()) {}
         Log.e("new manager created ", "id  = ${manager?.managerId}")
-        setConstrainFragmentLifecycleCallBack { lifecycle, from, s ->
-//            Log.e("------ ", "cf lifecycle changed :form $from \n lifecycle = $lifecycle \n")
+        setConstrainFragmentLifecycleCallBack { lifecycle, from, s -> //            Log.e("------ ", "cf lifecycle changed :form $from \n lifecycle = $lifecycle \n")
         }
     }
 
