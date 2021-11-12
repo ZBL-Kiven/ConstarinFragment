@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleRegistry
 import com.zj.cf.FMStore
 import com.zj.cf.lifecycleCallback
 import com.zj.cf.unitive.Lifecycle
@@ -19,6 +20,10 @@ import java.util.*
 abstract class BaseFragment : Fragment() {
 
     open val fId: String = UUID.randomUUID().toString()
+    open var useDefaultLifecycle = false
+
+    private val lifecycleRegistry by lazy { LifecycleRegistry(this) }
+
     internal var managerId: String = ""
     var rootView: View? = null
     var removing = false
@@ -30,6 +35,24 @@ abstract class BaseFragment : Fragment() {
     private var curLifeState = Lifecycle.NONE
         set(value) {
             field = value
+            when (value) {
+                Lifecycle.CREATE, Lifecycle.STOP -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.CREATED
+                Lifecycle.START, Lifecycle.RESTART, Lifecycle.PAUSE -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.STARTED
+                Lifecycle.NONE -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.INITIALIZED
+                Lifecycle.RESUME -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.RESUMED
+                Lifecycle.DESTROY -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.DESTROYED
+                else -> {
+                }
+            }
+            lifecycleRegistry.handleLifecycleEvent(when (value) {
+                Lifecycle.NONE -> androidx.lifecycle.Lifecycle.Event.ON_ANY
+                Lifecycle.CREATE, Lifecycle.CREATED -> androidx.lifecycle.Lifecycle.Event.ON_CREATE
+                Lifecycle.START, Lifecycle.RESTART -> androidx.lifecycle.Lifecycle.Event.ON_START
+                Lifecycle.RESUME -> androidx.lifecycle.Lifecycle.Event.ON_RESUME
+                Lifecycle.PAUSE -> androidx.lifecycle.Lifecycle.Event.ON_PAUSE
+                Lifecycle.STOP -> androidx.lifecycle.Lifecycle.Event.ON_STOP
+                Lifecycle.DESTROY -> androidx.lifecycle.Lifecycle.Event.ON_DESTROY
+            })
             lifecycleCallback?.invoke(value, fId, FMStore.getManagersInfo())
         }
 
@@ -298,5 +321,9 @@ abstract class BaseFragment : Fragment() {
 
     protected fun <T : View> find(id: Int): T? {
         return rootView?.findViewById(id)
+    }
+
+    override fun getLifecycle(): androidx.lifecycle.Lifecycle {
+        return if (useDefaultLifecycle) super.getLifecycle() else lifecycleRegistry
     }
 }

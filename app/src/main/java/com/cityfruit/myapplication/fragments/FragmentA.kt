@@ -1,10 +1,14 @@
 package com.cityfruit.myapplication.fragments
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.cityfruit.myapplication.R
 import com.cityfruit.myapplication.addOnClickListener
 import com.zj.cf.annotations.Constrain
@@ -15,7 +19,11 @@ import com.cityfruit.myapplication.getBundle
 import kotlinx.android.synthetic.main.fragment_a.*
 
 @Constrain(id = "FragmentA", backMode = 1)
-class FragmentA : ConstrainFragment() {
+class FragmentA : ConstrainFragment(), LifecycleObserver {
+
+    init {
+        lifecycle.addObserver(this)
+    }
 
     @Container var frgContainer: FrameLayout? = null
 
@@ -48,5 +56,35 @@ class FragmentA : ConstrainFragment() {
         val text = javaClass.simpleName
         txt?.text = text
         bg?.setBackgroundColor(ContextCompat.getColor(activity ?: return, R.color.c1))
+    }
+
+    @OnLifecycleEvent(value = Lifecycle.Event.ON_CREATE)
+    fun onLifecycleCreate() {
+        Log.e("------ ", "onLifecycleCreate")
+    }
+
+    @OnLifecycleEvent(value = Lifecycle.Event.ON_START)
+    fun onLifecycleStart() {
+        Log.e("------ ", "onLifecycleStart")
+    }
+
+    @OnLifecycleEvent(value = Lifecycle.Event.ON_RESUME)
+    fun onLifecycleResume() {
+        Log.e("------ ", "onLifecycleResume")
+    }
+
+    @OnLifecycleEvent(value = Lifecycle.Event.ON_PAUSE)
+    fun onLifecyclePaused() {
+        Log.e("------ ", "onLifecyclePaused")
+    }
+
+    @OnLifecycleEvent(value = Lifecycle.Event.ON_STOP)
+    fun onLifecycleStop() {
+        Log.e("------ ", "onLifecycleStop")
+    }
+
+    @OnLifecycleEvent(value = Lifecycle.Event.ON_DESTROY)
+    fun onLifecycleDestroy() {
+        Log.e("------ ", "onLifecycleDestroy")
     }
 }
