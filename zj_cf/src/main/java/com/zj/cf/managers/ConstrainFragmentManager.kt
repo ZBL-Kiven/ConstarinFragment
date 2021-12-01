@@ -102,7 +102,7 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
                     } else {
                         frg.setProxy(it)
                     }
-                    if (isBack) frg.onFragmentResult(bundle) else frg.onPostValue(it.bundle)
+                    if (isBack) frg?.onFragmentResult(bundle) else frg?.onPostValue(it.bundle)
                     showFragment(it.id)
                 }
             }

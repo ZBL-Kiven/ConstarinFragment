@@ -2,7 +2,6 @@
 
 package com.zj.cf.managers
 
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -123,17 +122,17 @@ abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActi
      * but no if you started it by a ConstrainFragment context.
      * */
     fun clear() {
+        container.unregisterOnPageChangeCallback(pageChangeListener)
+        container.removeAllViews()
+        adapter.notifyDataSetChanged()
         FMStore.removeManager(this.managerId)
         tlm?.detach()
         clearFragments()
         curData.clear()
-        adapter.notifyDataSetChanged()
-        container.unregisterOnPageChangeCallback(pageChangeListener)
-        container.removeAllViews()
         tlm = null
     }
 
-    inner class TabFragmentAdapter(activity: FragmentActivity, private val fIn: () -> List<DataWrapInfo>) : FragmentStateAdapter(activity) {
+    internal inner class TabFragmentAdapter(activity: FragmentActivity, private val fIn: () -> List<DataWrapInfo>) : FragmentStateAdapter(activity) {
 
         override fun getItemCount(): Int {
             return fIn().size

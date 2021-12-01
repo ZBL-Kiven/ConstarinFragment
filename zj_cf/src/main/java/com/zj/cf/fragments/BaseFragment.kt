@@ -35,24 +35,26 @@ abstract class BaseFragment : Fragment() {
     private var curLifeState = Lifecycle.NONE
         set(value) {
             field = value
-            when (value) {
-                Lifecycle.CREATE, Lifecycle.STOP -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.CREATED
-                Lifecycle.START, Lifecycle.RESTART, Lifecycle.PAUSE -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.STARTED
-                Lifecycle.NONE -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.INITIALIZED
-                Lifecycle.RESUME -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.RESUMED
-                Lifecycle.DESTROY -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.DESTROYED
-                else -> {
+            kotlin.runCatching {
+                when (value) {
+                    Lifecycle.CREATE, Lifecycle.STOP -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.CREATED
+                    Lifecycle.START, Lifecycle.RESTART, Lifecycle.PAUSE -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.STARTED
+                    Lifecycle.NONE -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.INITIALIZED
+                    Lifecycle.RESUME -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.RESUMED
+                    Lifecycle.DESTROY -> lifecycleRegistry.currentState = androidx.lifecycle.Lifecycle.State.DESTROYED
+                    else -> {
+                    }
                 }
+                lifecycleRegistry.handleLifecycleEvent(when (value) {
+                    Lifecycle.NONE -> androidx.lifecycle.Lifecycle.Event.ON_ANY
+                    Lifecycle.CREATE, Lifecycle.CREATED -> androidx.lifecycle.Lifecycle.Event.ON_CREATE
+                    Lifecycle.START, Lifecycle.RESTART -> androidx.lifecycle.Lifecycle.Event.ON_START
+                    Lifecycle.RESUME -> androidx.lifecycle.Lifecycle.Event.ON_RESUME
+                    Lifecycle.PAUSE -> androidx.lifecycle.Lifecycle.Event.ON_PAUSE
+                    Lifecycle.STOP -> androidx.lifecycle.Lifecycle.Event.ON_STOP
+                    Lifecycle.DESTROY -> androidx.lifecycle.Lifecycle.Event.ON_DESTROY
+                })
             }
-            lifecycleRegistry.handleLifecycleEvent(when (value) {
-                Lifecycle.NONE -> androidx.lifecycle.Lifecycle.Event.ON_ANY
-                Lifecycle.CREATE, Lifecycle.CREATED -> androidx.lifecycle.Lifecycle.Event.ON_CREATE
-                Lifecycle.START, Lifecycle.RESTART -> androidx.lifecycle.Lifecycle.Event.ON_START
-                Lifecycle.RESUME -> androidx.lifecycle.Lifecycle.Event.ON_RESUME
-                Lifecycle.PAUSE -> androidx.lifecycle.Lifecycle.Event.ON_PAUSE
-                Lifecycle.STOP -> androidx.lifecycle.Lifecycle.Event.ON_STOP
-                Lifecycle.DESTROY -> androidx.lifecycle.Lifecycle.Event.ON_DESTROY
-            })
             lifecycleCallback?.invoke(value, fId, FMStore.getManagersInfo())
         }
 

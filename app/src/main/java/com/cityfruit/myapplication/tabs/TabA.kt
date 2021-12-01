@@ -25,7 +25,7 @@ class TabA : BaseLinkageFragment() {
         super.onCreate()
         container = rootView as? ViewGroup
         startFragmentByNewTask(FragmentA::class.java, getBundle("bottomB 启动了 FrgA"), {
-            ToastUtils.show(context, "it is already last in stack");false
+            ToastUtils.show(context, "it is already last in stack");true
         })
     }
 }
