@@ -2,7 +2,6 @@ package com.cityfruit.myapplication
 
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import androidx.appcompat.app.AppCompatActivity
 import com.cityfruit.myapplication.indecators.BottomA
 import com.cityfruit.myapplication.indecators.BottomB
@@ -32,15 +31,15 @@ class SecondAct : AppCompatActivity() {
         }
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            manager?.let {
-                (getTop(it) as? ConstrainFragment)?.let { cf ->
-                    cf.finish()
-                    return false
+    override fun finish() {
+        manager?.let {
+            (getTop(it) as? ConstrainFragment)?.let { cf ->
+                cf.finish { success, inTopOfStack ->
+                    if (inTopOfStack) super.finish()
                 }
+                return
             }
         }
-        return super.onKeyDown(keyCode, event)
+        super.finish()
     }
 }

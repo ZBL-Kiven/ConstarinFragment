@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.zj.cf.managers
 
 import android.os.Bundle
@@ -8,11 +10,12 @@ import com.zj.cf.FMStore
 import com.zj.cf.FMStore.getSimpleId
 import com.zj.cf.annotations.ConstrainMode.*
 import com.zj.cf.fragments.ConstrainFragment
+import com.zj.cf.unitive.OnFinishCallBack
 import com.zj.cf.unitive.ProxyManager
 import java.util.*
 import kotlin.math.max
 
-internal abstract class ConstrainFragmentManager(managerId: String, manager: FragmentManager, @IdRes containerId: Int, val clearWhenEmptyStack: () -> Boolean) : FragmentHelper<ConstrainFragment>(managerId, manager, containerId) {
+abstract class ConstrainFragmentManager(managerId: String, manager: FragmentManager, @IdRes containerId: Int, internal val clearWhenEmptyStack: () -> Boolean) : FragmentHelper<ConstrainFragment>(managerId, manager, containerId) {
 
     private var stack: Stack<ProxyManager<*>>? = null
         get() {
@@ -20,12 +23,12 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
         }
 
     @UiThread
-    fun getCurrentStackSize(): Int {
+    internal fun getCurrentStackSize(): Int {
         return stack?.size ?: 0
     }
 
     @UiThread
-    fun setBackStack(backed: ProxyManager<*>) {
+    internal fun setBackStack(backed: ProxyManager<*>) {
         stack?.let {
             synchronized(it) {
                 val current: ProxyManager<*> = it.pop()
@@ -49,7 +52,7 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
     }
 
     @UiThread
-    fun startFragment(proxy: ProxyManager<*>) {
+    internal fun startFragment(proxy: ProxyManager<*>) {
 
         fun follow(proxy: ProxyManager<*>) {
             stack?.push(proxy)
@@ -110,49 +113,64 @@ internal abstract class ConstrainFragmentManager(managerId: String, manager: Fra
     }
 
     @UiThread
-    fun finishFragment(id: String, onFinished: ((isEmptyStack: Boolean, clearWhenEmptyStack: Boolean) -> Unit)? = null) {
-        if (stack?.peek()?.id != id) onFinished?.invoke(false, true); else {
-            stack?.pop()?.let {
-                if (it.isHome || stack.isNullOrEmpty()) {
-                    stack?.clear()
-                    FMStore.checkIsConstrainParent(managerId)
-                    if (clearWhenEmptyStack()) {
-                        removeFragmentById(it.id) {
-                            clearFragments()
-                            val mid = it.getManagerId()
-                            FMStore.getManagerByLevel(mid, -1)?.let { lastManager ->
-                                lastManager.getCurrentFragment()?.resumeFragment()
-                            }
-                            FMStore.removeManager(mid)
-                            onFinished?.invoke(true, true)
-                        }
+    fun finishTopFragment(onFinished: OnFinishCallBack? = null) {
+        val fid = getTopOfStack()?.fId
+        if (fid.isNullOrEmpty()) {
+            onFinished?.errorWithStackEmpty()
+            return
+        }
+        finishFragment(fid, onFinished)
+    }
 
-                    } else {
-                        stack?.push(it)
-                        onFinished?.invoke(false, true)
+    @UiThread
+    fun finishFragment(id: String, onFinished: OnFinishCallBack? = null) {
+        when {
+            stack.isNullOrEmpty() -> onFinished?.errorWithStackEmpty()
+            stack?.peek()?.id != id -> onFinished?.errorWithNotCurrent()
+            else -> {
+                stack?.pop()?.let {
+                    if (it.isHome || stack.isNullOrEmpty()) {
+                        stack?.clear()
+                        FMStore.checkIsConstrainParent(managerId)
+                        if (clearWhenEmptyStack()) {
+                            removeFragmentById(it.id) {
+                                clearFragments()
+                                val mid = it.getManagerId()
+                                val lastManager = FMStore.getManagerByLevel(mid, -1)
+                                FMStore.removeManager(mid)
+                                onFinished?.finished(id, true)
+                                if (lastManager != null) {
+                                    lastManager.getCurrentFragment()?.resumeFragment()
+                                    onFinished?.setToPrevious(lastManager)
+                                }
+                            }
+                        } else {
+                            stack?.push(it)
+                            onFinished?.finishKeepWithTop(id)
+                        }
+                        return
                     }
-                    return
+                    when (it.backMode) {
+                        CONST_ONLY_ONCE -> {
+                            removeFragmentById(it.id) { onFinished?.finished(id, false) }
+                        }
+                        CONST_LASTING -> {
+                            hideFragment(it.id) { onFinished?.finished(id, false) }
+                        }
+                    };syncFrag(true, it.getResultBundle())
                 }
-                when (it.backMode) {
-                    CONST_ONLY_ONCE -> {
-                        removeFragmentById(it.id) { onFinished?.invoke(false, false) }
-                    }
-                    CONST_LASTING -> {
-                        hideFragment(it.id) { onFinished?.invoke(false, false) }
-                    }
-                };syncFrag(true, it.getResultBundle())
             }
         }
     }
 
     @UiThread
-    fun clearStack() {
+    fun clearStack(keepCurrent: Boolean = false) {
         if (stack?.isNotEmpty() == true) {
-            val cur = stack?.pop()
+            val cur = if (keepCurrent) stack?.pop() else null
             while (stack?.isNotEmpty() == true) {
-                stack?.pop()
+                stack?.pop()?.finish()
             }
-            stack?.push(cur)
+            cur?.let { stack?.push(it) }
         }
     }
 }

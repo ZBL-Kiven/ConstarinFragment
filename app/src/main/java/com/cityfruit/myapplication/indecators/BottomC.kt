@@ -31,7 +31,7 @@ class BottomC : BaseLinkageFragment() {
 
     private fun initData() {
         startFragmentByNewTask(FragmentA::class.java, getBundle("bottomC 启动了 FrgA"), {
-            false
+            true
         })
     }
 }

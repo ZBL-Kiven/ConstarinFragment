@@ -1,32 +1,36 @@
 package com.cityfruit.myapplication.indecators
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.cityfruit.myapplication.R
-import com.zj.cf.annotations.Container
 import com.zj.cf.fragments.BaseLinkageFragment
-import com.zj.cf.managers.BaseFragmentManager
-import com.cityfruit.myapplication.tabs.TabA
-import com.cityfruit.myapplication.tabs.TabB
-import com.cityfruit.myapplication.tabs.TabC
-import kotlinx.android.synthetic.main.fragment_b.*
 
-class BottomA : BaseLinkageFragment() {
+class BottomA : BaseLinkageFragment(), LifecycleEventObserver {
 
-    override val fId: String; get() = "bottom_A_" + super.fId
-
-    @Container var container: ViewGroup? = null
-
-    override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
-        return inflater.inflate(R.layout.fragment_b, container, false)
-    }
 
     override fun onCreate() {
         super.onCreate()
-        container = fragment_container
-        object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, TabA(), TabB(), TabC()) {
 
-        }
+    }
+
+    override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
+        return inflater.inflate(R.layout.fragment_empty, container, false)
+    }
+
+    override fun onReStart() {
+        super.onReStart()
+    }
+
+    override fun onStarted() {
+        super.onStarted()
+    }
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        Log.e("------ ", "onLifecycleChanged ===>  ${event.name}")
     }
 }

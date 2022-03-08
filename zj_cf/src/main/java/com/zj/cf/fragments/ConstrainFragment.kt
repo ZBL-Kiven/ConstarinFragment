@@ -2,6 +2,8 @@ package com.zj.cf.fragments
 
 import android.os.Bundle
 import android.view.ViewGroup
+import com.zj.cf.managers.FragmentHelper
+import com.zj.cf.unitive.OnFinishCallBack
 import com.zj.cf.unitive.ProxyManager
 
 @Suppress("unused")
@@ -19,18 +21,36 @@ abstract class ConstrainFragment : BaseFragment() {
 
     open fun onFragmentResult(bundle: Bundle?) {}
 
-    open fun finish() {
+    open fun finish(onFinished: ((success: Boolean, inTopOfStack: Boolean) -> Unit)? = null) {
         if (onBack() && !removing) {
             removing = true
-            proxy?.finish { isEmptyStack, clearWhenEmptyStack ->
-                if (!clearWhenEmptyStack) removing = false
-                rootView?.apply {
-                    if (isEmptyStack && this is ViewGroup) {
-                        removeAllViews()
-                    }
+            proxy?.finish(object : OnFinishCallBack() {
+
+                override fun finishKeepWithTop(id: String) {
+                    removing = false
+                    onFinished?.invoke(false, true)
                 }
-                rootView = null
-            }
+
+                override fun finished(id: String, clearWhenEmptyStack: Boolean) {
+                    (rootView as? ViewGroup)?.removeAllViews()
+                    rootView = null
+                    if (!clearWhenEmptyStack) onFinished?.invoke(true, clearWhenEmptyStack)
+                }
+
+                override fun errorWithStackEmpty() {
+                    removing = false
+                    onFinished?.invoke(true, true)
+                }
+
+                override fun setToPrevious(previousManagerId: FragmentHelper<*>?) {
+                    /**The current stack position rolls back to the previous stack,
+                     * since it is called by this ConstrainFragment and therefore should not affect its corresponding Activity.*/
+                }
+
+                override fun errorWithNotCurrent() {
+                    removing = false
+                }
+            })
         }
     }
 
@@ -49,8 +69,8 @@ abstract class ConstrainFragment : BaseFragment() {
         this.proxy = proxy
     }
 
-    protected fun clearStack() {
-        this.proxy?.clearStack()
+    protected fun clearStack(keepCurrent: Boolean = false) {
+        this.proxy?.clearStack(keepCurrent)
     }
 
     protected fun setResult(bundle: Bundle?) {

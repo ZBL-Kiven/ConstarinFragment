@@ -2,10 +2,11 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
+
+    compileSdkVersion compile_sdk_version as int
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion min_sdk_version as int
+        targetSdkVersion target_sdk_version as int
     }
 
     buildTypes {

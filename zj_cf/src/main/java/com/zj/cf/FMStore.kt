@@ -31,11 +31,6 @@ object FMStore {
             val managerInfo = ManagerInfo("", curManagerId, manager)
             managers[key] = managerInfo
         }
-        try {
-            initLifecycle()
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
         println("a-----  key  =  $key   mid = ${manager.managerId}")
     }
 
@@ -230,11 +225,6 @@ object FMStore {
         } catch (e: Exception) {
             throw NullPointerException("can't parsed the fragment fId, may fId $id was wrong form generate")
         }
-    }
-
-
-    private fun initLifecycle() {
-
     }
 }
 

@@ -89,7 +89,6 @@ abstract class BaseFragment : Fragment() {
     }
 
     final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         curLifeState = Lifecycle.CREATE
         onHiddenChanged(isHidden)
     }
@@ -286,8 +285,8 @@ abstract class BaseFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         destroyFragment()
+        super.onDestroyView()
     }
 
     final override fun onDestroy() {

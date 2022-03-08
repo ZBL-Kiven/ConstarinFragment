@@ -12,17 +12,31 @@ class FragmentTab(private val p: Int) : BaseTabFragment() {
     override val fId: String; get() = "TAB_$p"
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
-        Log.e("----- ", "1111")
         return inflater.inflate(R.layout.tab_item, container, false)
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        Log.e("----- ", "33333")
+    override fun onResumed() {
+        Log.e("------- ", " $fId ==> onResumed")
+        super.onResumed()
     }
 
-    override fun onResumed() {
-        super.onResumed()
-        Log.e("----- ", "44444")
+    override fun onStarted() {
+        Log.e("------- ", " $fId ==> onStarted")
+        super.onStarted()
+    }
+
+    override fun onReStart() {
+        Log.e("------- ", " $fId ==> onReStart")
+        super.onReStart()
+    }
+
+    override fun onPaused() {
+        Log.e("------- ", " $fId ==> onPaused")
+        super.onPaused()
+    }
+
+    override fun onStopped() {
+        Log.e("------- ", " $fId ==> onStopped")
+        super.onStopped()
     }
 }
