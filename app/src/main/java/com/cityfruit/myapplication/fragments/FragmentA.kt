@@ -61,6 +61,10 @@ class FragmentA : ConstrainFragment(), LifecycleEventObserver {
         bg?.setBackgroundColor(ContextCompat.getColor(activity ?: return, R.color.c1))
     }
 
+    override fun finish(onFinished: ((success: Boolean, inTopOfStack: Boolean) -> Unit)?) {
+        super.finish(onFinished)
+    }
+
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         Log.e("------ ", "onLifecycleChanged ===>  ${event.name}")
     }

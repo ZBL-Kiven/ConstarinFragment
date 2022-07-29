@@ -31,6 +31,6 @@ class BottomA : BaseLinkageFragment(), LifecycleEventObserver {
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        Log.e("------ ", "onLifecycleChanged ===>  ${event.name}")
+        Log.e("------ ", "onLifecycleChanged ===> $source   ${event.name}")
     }
 }

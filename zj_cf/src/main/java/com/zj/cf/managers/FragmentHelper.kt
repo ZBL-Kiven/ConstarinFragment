@@ -2,10 +2,12 @@
 
 package com.zj.cf.managers
 
+
 import androidx.annotation.UiThread
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.zj.cf.BsUtl
 import com.zj.cf.FMStore
 import com.zj.cf.fragments.BaseFragment
 import com.zj.cf.fragments.BaseLinkageFragment
@@ -22,8 +24,8 @@ import java.util.*
 @UiThread
 abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
-    open val managerId: String = UUID.randomUUID().toString()
-    private val fragmentManager: WeakReference<FragmentManager>
+    val managerId: String = UUID.randomUUID().toString()
+    private var fragmentManager: WeakReference<FragmentManager>? = null
     private val containId: Int
     private var currentItem = ""
     private var oldItem = ""
@@ -34,12 +36,15 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         checkHasAnyFragment(f.fId)
     }
 
-    constructor(fragment: BaseFragment, containId: Int) : this(if (fragment is ConstrainFragment) fragment.managerId else fragment.fId, fragment.childFragmentManager, containId)
+    constructor(fragment: BaseFragment, containId: Int) : this(fragment.requireActivity(), if (fragment is ConstrainFragment) fragment.managerId else fragment.fId, fragment.childFragmentManager, containId)
 
-    constructor(act: FragmentActivity, containId: Int) : this(UUID.randomUUID().toString(), if (!act.isFinishing) act.supportFragmentManager else throw IllegalArgumentException("can not create an fragmentManager with a destroyed context!"), containId)
+    constructor(act: FragmentActivity, containId: Int) : this(act, UUID.randomUUID().toString(), if (!act.isFinishing) act.supportFragmentManager else throw IllegalArgumentException("can not create an fragmentManager with a destroyed context!"), containId)
 
-    constructor(managerId: String, f: FragmentManager, c: Int) {
-        FMStore.putAManager(managerId, getManager());fragmentManager = WeakReference(f);containId = c
+    constructor(act: FragmentActivity, managerId: String, f: FragmentManager, c: Int) {
+        BsUtl.registerActivityCallBacks(act, this.managerId)
+        FMStore.putAManager(managerId, getManager())
+        fragmentManager = WeakReference(f)
+        containId = c
     }
 
     private fun getManager(): FragmentHelper<*> {
@@ -68,7 +73,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
      *
      * only supported by fragmentHelper extensions.
      * */
-    open fun getTopOfStack(): BaseFragment? {
+    open fun getTopOfStack(): ConstrainFragment? {
         return FMStore.getTopConstrainFragment(managerId)
     }
 
@@ -115,10 +120,13 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         if (f is BaseTabFragment || f is BaseLinkageFragment) {
             FMStore.removeManageWithFrgId(id)
         }
+        if (mFragments.isEmpty()) {
+            FMStore.removeManager(managerId)
+        }
     }
 
     internal fun isAttached(): Boolean {
-        return fragmentManager.get() != null
+        return fragmentManager?.get() != null
     }
 
     @UiThread
@@ -246,7 +254,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
      * @param isHidden it may ignore with null,else it call overridden to set a transaction type
      * */
     private fun runInTransaction(isHidden: Boolean?, fragment: F, run: (FragmentTransaction) -> Unit) {
-        val transaction = fragmentManager.get()?.beginTransaction() ?: return
+        val transaction = fragmentManager?.get()?.beginTransaction() ?: return
         try {
             if (isHidden != null) beginTransaction(isHidden, transaction, fragment.javaClass)
             run(transaction)

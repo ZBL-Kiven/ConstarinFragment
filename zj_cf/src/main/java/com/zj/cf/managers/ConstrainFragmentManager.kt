@@ -5,6 +5,7 @@ package com.zj.cf.managers
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.annotation.UiThread
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.zj.cf.FMStore
 import com.zj.cf.FMStore.getSimpleId
@@ -15,7 +16,7 @@ import com.zj.cf.unitive.ProxyManager
 import java.util.*
 import kotlin.math.max
 
-abstract class ConstrainFragmentManager(managerId: String, manager: FragmentManager, @IdRes containerId: Int, internal val clearWhenEmptyStack: () -> Boolean) : FragmentHelper<ConstrainFragment>(managerId, manager, containerId) {
+abstract class ConstrainFragmentManager(act: FragmentActivity, managerId: String, manager: FragmentManager, @IdRes containerId: Int, internal val clearWhenEmptyStack: () -> Boolean) : FragmentHelper<ConstrainFragment>(act, managerId, manager, containerId) {
 
     private var stack: Stack<ProxyManager<*>>? = null
         get() {
@@ -134,7 +135,6 @@ abstract class ConstrainFragmentManager(managerId: String, manager: FragmentMana
                         FMStore.checkIsConstrainParent(managerId)
                         if (clearWhenEmptyStack()) {
                             removeFragmentById(it.id) {
-                                clearFragments()
                                 val mid = it.getManagerId()
                                 val lastManager = FMStore.getManagerByLevel(mid, -1)
                                 FMStore.removeManager(mid)
@@ -143,6 +143,7 @@ abstract class ConstrainFragmentManager(managerId: String, manager: FragmentMana
                                     lastManager.getCurrentFragment()?.resumeFragment()
                                     onFinished?.setToPrevious(lastManager)
                                 }
+                                clearFragments()
                             }
                         } else {
                             stack?.push(it)

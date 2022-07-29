@@ -1,22 +1,22 @@
 package com.zj.cf
 
 import com.zj.cf.fragments.BaseFragment
+import com.zj.cf.fragments.ConstrainFragment
 import com.zj.cf.managers.BaseFragmentManager
 import com.zj.cf.managers.ConstrainFragmentManager
 import com.zj.cf.managers.FragmentHelper
 import com.zj.cf.managers.TabFragmentManager
 import com.zj.cf.unitive.ManagerInfo
-import java.lang.IllegalArgumentException
-import java.lang.StringBuilder
 
 object FMStore {
 
-    private val managers = mutableMapOf<String, ManagerInfo<*>>()
+    private val managers = LinkedHashMap<String, ManagerInfo<*>>()
 
     /**
      * @param key if called object was a linkage fragment instance, the pid is managerId but the fragment fId is the mapping keys
      * */
     fun <F : BaseFragment> putAManager(curManagerId: String?, manager: FragmentHelper<F>, key: String = "") {
+
         if (manager is BaseFragmentManager) {
             val last = managers[curManagerId]
             if (!last?.nextId.isNullOrEmpty()) {
@@ -31,7 +31,6 @@ object FMStore {
             val managerInfo = ManagerInfo("", curManagerId, manager)
             managers[key] = managerInfo
         }
-        println("a-----  key  =  $key   mid = ${manager.managerId}")
     }
 
     fun removeManager(managerId: String?) {
@@ -41,7 +40,7 @@ object FMStore {
         fun remove(managerId: String?, layer: Int = 0) {
 
             fun removeLinkageManager(manager: BaseFragmentManager, nextId: String? = null) {
-                nextId?.let { n -> removeList.add(n) }
+                if (!nextId.isNullOrEmpty()) removeList.add(nextId)
                 manager.getFragmentIds()?.forEach { s ->
                     manager.removeFragmentById(s)
                     managers[s]?.let { m2 ->
@@ -52,13 +51,15 @@ object FMStore {
             }
 
             fun removeTabManager(manager: TabFragmentManager<*, *>, nextId: String? = null) {
-                nextId?.let { n -> removeList.add(n) }
+                if (!nextId.isNullOrEmpty()) removeList.add(nextId)
                 manager.getFragmentIds()?.forEach { s ->
                     manager.removeFragmentById(s)
                     managers[s]?.let { m2 ->
                         removeList.add(s)
                         remove(m2.nextId, layer + 1)
                     }
+                } ?: run {
+
                 }
             }
 
@@ -88,6 +89,7 @@ object FMStore {
         remove(managerId)
         removeList.forEach {
             managers.remove(it)
+            BsUtl.onManagerRemoving(it)
         }
     }
 
@@ -118,11 +120,11 @@ object FMStore {
     }
 
     /**
-     * get topic for BaseFragmentManager and ConstrainFragmentManager
+     * Get topic for BaseFragmentManager and ConstrainFragmentManager
      *
      * @param ase don't set it in called ,it used by recursive
      */
-    fun getTopConstrainFragment(managerId: String?, ase: Boolean = false): BaseFragment? {
+    fun getTopConstrainFragment(managerId: String?, ase: Boolean = false): ConstrainFragment? {
         if (!managers.contains(managerId)) return null
         managers[managerId]?.let {
             when (it.manager) {

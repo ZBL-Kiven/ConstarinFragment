@@ -24,22 +24,5 @@ class SecondAct : AppCompatActivity() {
         setContentView(R.layout.activity_second)
         manager = object : BaseFragmentManager(this, R.id.fragment_container, 0, ll, mBA, BottomB(), BottomC(), BottomD()) {}
         Log.e("new manager created ", "id  = ${manager?.managerId}")
-        setConstrainFragmentLifecycleCallBack { lifecycle, from, s ->
-
-            // Log.e("------ ", "cf lifecycle changed :form $from \n lifecycle = $lifecycle \n")
-
-        }
-    }
-
-    override fun finish() {
-        manager?.let {
-            (getTop(it) as? ConstrainFragment)?.let { cf ->
-                cf.finish { success, inTopOfStack ->
-                    if (inTopOfStack) super.finish()
-                }
-                return
-            }
-        }
-        super.finish()
     }
 }

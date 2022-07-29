@@ -1,14 +1,10 @@
 package com.cityfruit.myapplication
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
-import com.cityfruit.myapplication.indecators.*
+import androidx.appcompat.app.AppCompatActivity
 import com.zj.cf.FMStore
-import com.zj.cf.fragments.ConstrainFragment
-import com.zj.cf.managers.BaseFragmentManager
 import com.zj.cf.setConstrainFragmentLifecycleCallBack
 import kotlinx.android.synthetic.main.activity_main.*
 

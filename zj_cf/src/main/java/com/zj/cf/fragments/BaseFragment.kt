@@ -100,6 +100,7 @@ abstract class BaseFragment : Fragment() {
         if (exists) change()
     }
 
+    @Deprecated("Deprecated in Java", ReplaceWith("throw IllegalArgumentException(it was deprecated because thus has no ordering guarantees with regard to fragment lifecycle method calls.)"))
     final override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         throw IllegalArgumentException("it was deprecated because thus has no ordering guarantees with regard to fragment lifecycle method calls.")
     }
@@ -166,6 +167,13 @@ abstract class BaseFragment : Fragment() {
             onResumed() //Adjust the top of the stack and expand at the back
             performChildResume()
         }
+    }
+
+    /**
+     * @return true skipped  else processed.
+     * */
+    internal open fun onBackPressed(): Boolean {
+        return true
     }
 
     open fun performChildResume() {
@@ -259,6 +267,7 @@ abstract class BaseFragment : Fragment() {
      * @Deprecated use [onViewCreated] for code touching
      * the Fragment's view and {@link #onCreate(Bundle)} for other initialization.
      * */
+    @Deprecated("Deprecated in Java", ReplaceWith("super.onActivityCreated(savedInstanceState)", "androidx.fragment.app.Fragment"))
     @Suppress("DEPRECATION")
     final override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
