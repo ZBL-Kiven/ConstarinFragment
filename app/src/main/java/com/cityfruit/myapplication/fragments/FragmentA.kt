@@ -19,11 +19,7 @@ import com.cityfruit.myapplication.getBundle
 import kotlinx.android.synthetic.main.fragment_a.*
 
 @Constrain(id = "FragmentA", backMode = 1)
-class FragmentA : ConstrainFragment(), LifecycleEventObserver {
-
-    init {
-        lifecycle.addObserver(this)
-    }
+class FragmentA : ConstrainFragment() {
 
     @Container var frgContainer: FrameLayout? = null
 
@@ -61,11 +57,4 @@ class FragmentA : ConstrainFragment(), LifecycleEventObserver {
         bg?.setBackgroundColor(ContextCompat.getColor(activity ?: return, R.color.c1))
     }
 
-    override fun finish(onFinished: ((success: Boolean, inTopOfStack: Boolean) -> Unit)?) {
-        super.finish(onFinished)
-    }
-
-    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        Log.e("------ ", "onLifecycleChanged ===>  ${event.name}")
-    }
 }

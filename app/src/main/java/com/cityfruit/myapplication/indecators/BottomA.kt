@@ -1,6 +1,5 @@
 package com.cityfruit.myapplication.indecators
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,7 @@ import com.zj.cf.fragments.BaseLinkageFragment
 
 class BottomA : BaseLinkageFragment(), LifecycleEventObserver {
 
+    override val fId: String; get() = "BottomA" + super.fId.hashCode()
 
     override fun onCreate() {
         super.onCreate()
@@ -31,6 +31,5 @@ class BottomA : BaseLinkageFragment(), LifecycleEventObserver {
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        Log.e("------ ", "onLifecycleChanged ===> $source   ${event.name}")
     }
 }

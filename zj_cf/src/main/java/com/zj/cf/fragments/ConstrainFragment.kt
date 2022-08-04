@@ -61,6 +61,10 @@ abstract class ConstrainFragment : BaseFragment() {
         return true
     }
 
+    open fun <T : ConstrainFragment> startFragment(fragmentCls: Class<T>, bundle: Bundle? = null) {
+        proxy?.start(fragmentCls, bundle)
+    }
+
     protected fun getStackTop(): BaseFragment? {
         return this.proxy?.getStackTop()
     }
@@ -79,9 +83,5 @@ abstract class ConstrainFragment : BaseFragment() {
 
     protected fun <T : ConstrainFragment> setPrevious(previousFragment: Class<T>, bundle: Bundle? = null) {
         this.proxy?.upDatePreviousFragment(previousFragment, bundle)
-    }
-
-    protected fun <T : ConstrainFragment> startFragment(fragmentCls: Class<T>, bundle: Bundle? = null) {
-        proxy?.start(fragmentCls, bundle)
     }
 }

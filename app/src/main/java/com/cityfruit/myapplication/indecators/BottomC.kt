@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.bottom.*
 
 class BottomC : BaseLinkageFragment() {
 
-    override val fId: String; get() = "bottom_C" + super.fId
+    override val fId: String; get() = "BottomC" + super.fId.hashCode()
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.bottom, container, false)

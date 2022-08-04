@@ -1,6 +1,5 @@
 package com.cityfruit.myapplication.tabs
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,28 +14,7 @@ class FragmentTab(private val p: Int) : BaseTabFragment() {
         return inflater.inflate(R.layout.tab_item, container, false)
     }
 
-    override fun onResumed() {
-        Log.e("------- ", " $fId ==> onResumed")
-        super.onResumed()
-    }
+    override fun onCreate() {
 
-    override fun onStarted() {
-        Log.e("------- ", " $fId ==> onStarted")
-        super.onStarted()
-    }
-
-    override fun onReStart() {
-        Log.e("------- ", " $fId ==> onReStart")
-        super.onReStart()
-    }
-
-    override fun onPaused() {
-        Log.e("------- ", " $fId ==> onPaused")
-        super.onPaused()
-    }
-
-    override fun onStopped() {
-        Log.e("------- ", " $fId ==> onStopped")
-        super.onStopped()
     }
 }

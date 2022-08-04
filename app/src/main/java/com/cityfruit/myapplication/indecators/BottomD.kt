@@ -14,7 +14,8 @@ import kotlinx.android.synthetic.main.tab.*
 
 class BottomD : BaseLinkageFragment() {
 
-    override val fId: String; get() = "bottom_D" + super.fId
+    override val fId: String; get() = "BottomD" + super.fId.hashCode()
+
     private var manager: TabFragmentManager<Int, FragmentTab>? = null
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -33,9 +34,9 @@ class BottomD : BaseLinkageFragment() {
 
             override fun syncSelectState(selectId: String) {
                 super.syncSelectState(selectId)
-                Log.e("------ ", "onSync   $selectId   ${getFragmentById(selectId)}")
+//                Log.e("------ ", "onSync   $selectId   ${getFragmentById(selectId)}")
             }
-            
+
             override fun onCreateFragment(d: Int, p: Int): FragmentTab {
                 return FragmentTab(p)
             }

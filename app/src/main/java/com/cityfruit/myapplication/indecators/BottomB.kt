@@ -13,7 +13,7 @@ import com.cityfruit.myapplication.getBundle
 
 class BottomB : BaseLinkageFragment() {
 
-    override val fId: String; get() = "bottom_B" + super.fId
+    override val fId: String; get() = "BottomB" + super.fId.hashCode()
 
     override fun getView(inflater: LayoutInflater, container: ViewGroup?): View {
         return inflater.inflate(R.layout.bottom, container, false)
