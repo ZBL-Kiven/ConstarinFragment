@@ -34,8 +34,8 @@ internal data class ProxyManager<T : ConstrainFragment>(internal val mFragmentCl
         return this.fragmentManager ?: throw NullPointerException("your fragment manager can not use form null!")
     }
 
-    fun finish(obs: OnFinishCallBack? = null) {
-        fragmentManager?.finishFragment(id, obs)
+    fun finish(obs: OnFinishCallBack? = null, force: Boolean = false) {
+        fragmentManager?.finishFragment(id, obs, force)
     }
 
     fun clearStack(keepCurrent: Boolean) {

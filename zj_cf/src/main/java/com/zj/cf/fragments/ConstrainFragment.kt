@@ -73,7 +73,7 @@ abstract class ConstrainFragment : BaseFragment() {
         this.proxy = proxy
     }
 
-    protected fun clearStack(keepCurrent: Boolean = false) {
+    fun clearStack(keepCurrent: Boolean = false) {
         this.proxy?.clearStack(keepCurrent)
     }
 

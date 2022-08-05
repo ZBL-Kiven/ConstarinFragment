@@ -124,7 +124,12 @@ abstract class ConstrainFragmentManager(act: FragmentActivity, managerId: String
     }
 
     @UiThread
-    fun finishFragment(id: String, onFinished: OnFinishCallBack? = null) {
+    fun finishAll() {
+        clearStack(false)
+    }
+
+    @UiThread
+    fun finishFragment(id: String, onFinished: OnFinishCallBack? = null, forced: Boolean = false) {
         when {
             stack.isNullOrEmpty() -> onFinished?.errorWithStackEmpty()
             stack?.peek()?.id != id -> onFinished?.errorWithNotCurrent()
@@ -133,7 +138,7 @@ abstract class ConstrainFragmentManager(act: FragmentActivity, managerId: String
                     if (it.isHome || stack.isNullOrEmpty()) {
                         stack?.clear()
                         FMStore.checkIsConstrainParent(managerId)
-                        if (clearWhenEmptyStack()) {
+                        if (clearWhenEmptyStack() || forced) {
                             removeFragmentById(it.id) {
                                 val mid = it.getManagerId()
                                 val lastManager = FMStore.getManagerByLevel(mid, -1)
@@ -146,6 +151,7 @@ abstract class ConstrainFragmentManager(act: FragmentActivity, managerId: String
                                 clearFragments()
                             }
                         } else {
+
                             stack?.push(it)
                             onFinished?.finishKeepWithTop(id)
                         }
@@ -169,7 +175,7 @@ abstract class ConstrainFragmentManager(act: FragmentActivity, managerId: String
         if (stack?.isNotEmpty() == true) {
             val cur = if (keepCurrent) stack?.pop() else null
             while (stack?.isNotEmpty() == true) {
-                stack?.pop()?.finish()
+                stack?.peek()?.finish(force = true)
             }
             cur?.let { stack?.push(it) }
         }
