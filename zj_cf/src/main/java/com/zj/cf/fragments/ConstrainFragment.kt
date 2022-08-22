@@ -77,7 +77,7 @@ abstract class ConstrainFragment : BaseFragment() {
         this.proxy?.clearStack(keepCurrent)
     }
 
-    protected fun setResult(bundle: Bundle?) {
+    open fun setResult(bundle: Bundle?) {
         this.proxy?.setResult(bundle)
     }
 

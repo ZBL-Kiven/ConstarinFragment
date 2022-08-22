@@ -151,7 +151,6 @@ abstract class ConstrainFragmentManager(act: FragmentActivity, managerId: String
                                 clearFragments()
                             }
                         } else {
-
                             stack?.push(it)
                             onFinished?.finishKeepWithTop(id)
                         }
