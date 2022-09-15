@@ -112,7 +112,7 @@ abstract class BaseFragmentManager : FragmentHelper<BaseLinkageFragment> {
     }
 
     fun selectedFragment(id: String) {
-        getFragmentById(id)?.linkageView?.callOnClick()
+        getFragmentByInternalFId(id)?.linkageView?.callOnClick()
     }
 
     /**

@@ -57,13 +57,21 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
 
     @UiThread
     fun getFragments(): List<F>? {
-        return if (mFragments.isNullOrEmpty()) null else mFragments.mapTo(arrayListOf()) {
+        return if (mFragments.isEmpty()) null else mFragments.mapTo(arrayListOf()) {
             it.value
         }
     }
 
+    open fun getFragmentById(id: String, multiIndex: Int = -1): F? {
+        var qid = id
+        if (!qid.contains(managerId)) {
+            qid = FMStore.getQueryId(id, this, multiIndex)
+        }
+        return mFragments[qid]
+    }
+
     open fun getFragmentIds(): List<String>? {
-        return if (mFragments.isNullOrEmpty()) null else mFragments.mapTo(arrayListOf()) {
+        return if (mFragments.isEmpty()) null else mFragments.mapTo(arrayListOf()) {
             it.key
         }
     }
@@ -78,11 +86,6 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     }
 
     @UiThread
-    open fun getFragmentById(id: String): F? {
-        return mFragments[id]
-    }
-
-    @UiThread
     open fun getCurrentFragment(): F? {
         return mFragments[currentItem]
     }
@@ -94,6 +97,11 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     @UiThread
     open fun setFragmentObserver(observer: FragmentObserver) {
         this.fragmentObserver = observer
+    }
+
+    @UiThread
+    internal fun getFragmentByInternalFId(id: String): F? {
+        return mFragments[id]
     }
 
     @UiThread
@@ -138,7 +146,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
                 onRemoved?.invoke()
             }
         }
-        getFragmentById(id)?.let { frg ->
+        getFragmentByInternalFId(id)?.let { frg ->
             if (currentItem == id) {
                 hideFragment(frg, true) {
                     remove(frg)
@@ -154,7 +162,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
         fun hide() {
             onHidden?.invoke()
         }
-        getFragmentById(id)?.let { frg ->
+        getFragmentByInternalFId(id)?.let { frg ->
             if (currentItem == id) {
                 hideFragment(frg, true) {
                     hide()
@@ -193,7 +201,7 @@ abstract class FragmentHelper<F : BaseFragment> : FragmentOperator<F> {
     }
 
     private fun showNewFragment(onShown: ((cur: String) -> Unit)? = null) {
-        getFragmentById(currentItem)?.let { frg ->
+        getFragmentByInternalFId(currentItem)?.let { frg ->
             fun shown() {
                 runInTransaction(true, frg) { it.show(frg) }
                 onShown?.invoke(frg.fId)

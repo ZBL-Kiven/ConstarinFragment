@@ -41,7 +41,7 @@ class FragmentD : ConstrainFragment() {
         }
 
         a_btn_finish?.addOnClickListener {
-            clearStack(false)
+            finish()
         }
 
         a_btn_next?.addOnClickListener {

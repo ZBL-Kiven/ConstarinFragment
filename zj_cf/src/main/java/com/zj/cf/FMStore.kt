@@ -1,5 +1,6 @@
 package com.zj.cf
 
+import android.util.Log
 import com.zj.cf.fragments.BaseFragment
 import com.zj.cf.fragments.ConstrainFragment
 import com.zj.cf.managers.BaseFragmentManager
@@ -211,6 +212,28 @@ object FMStore {
                 if (simpled.first == id && indexOfLast <= simpled.second) {
                     indexOfLast = simpled.second + 1
                 }
+            }
+        }
+        return String.format(ID_DOT, id, indexOfLast, manager.managerId)
+    }
+
+    internal fun <F : BaseFragment> getQueryId(id: String, manager: FragmentHelper<F>, multiIndex: Int): String {
+        var indexOfLast = -1
+        if (multiIndex == indexOfLast) {
+            manager.getFragmentIds()?.asReversed()?.forEach {
+                if (it.contains(id)) {
+                    val simpled = getSimpleId(it)
+                    if (simpled.first == id && indexOfLast < simpled.second) {
+                        indexOfLast = simpled.second
+                    }
+                }
+            }
+            if (indexOfLast > -1) {
+                Log.e("FragmentManager", "func getQueryId() not entirely credible case: \n" + //
+                        "There are currently ${indexOfLast + 1} ids started by the Manager,\n" + //
+                        " so the current returned FragmentId is the last notification. \n" + //
+                        "Try to use getFragmentById( ..multiIndex) to get the exact mapping unit." // MORE THAN ONE EXISTING
+                )
             }
         }
         return String.format(ID_DOT, id, indexOfLast, manager.managerId)

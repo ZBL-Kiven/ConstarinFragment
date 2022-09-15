@@ -97,7 +97,7 @@ abstract class ConstrainFragmentManager(act: FragmentActivity, managerId: String
         if (!stack.isNullOrEmpty()) stack?.let {
             synchronized(it) {
                 it.peek()?.let { it ->
-                    var frg = getFragmentById(it.id)
+                    var frg = getFragmentByInternalFId(it.id)
                     if (frg == null) {
                         frg = it.mFragmentClass.newInstance()
                         frg.setProxy(it)

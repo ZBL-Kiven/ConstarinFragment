@@ -101,7 +101,7 @@ abstract class TabFragmentManager<T, F : BaseTabFragment>(activity: FragmentActi
     }
 
     override fun getCurrentFragment(): F? {
-        return getFragmentById(curSelectedId)
+        return getFragmentByInternalFId(curSelectedId)
     }
 
     override fun getCurrentItemId(): String {
