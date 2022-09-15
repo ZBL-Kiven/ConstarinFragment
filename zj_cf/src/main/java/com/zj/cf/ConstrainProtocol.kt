@@ -3,19 +3,25 @@
 package com.zj.cf
 
 import android.os.Bundle
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import android.view.ViewGroup
+import com.zj.cf.annotations.Container
 import com.zj.cf.annotations.parser.AnnotationParser
 import com.zj.cf.annotations.parser.ConstrainFragmentAnnotationParser
-import com.zj.cf.annotations.Container
 import com.zj.cf.fragments.BaseFragment
 import com.zj.cf.fragments.BaseLinkageFragment
 import com.zj.cf.fragments.ConstrainFragment
 import com.zj.cf.managers.ConstrainFragmentManager
 import com.zj.cf.unitive.Lifecycle
 import java.security.InvalidParameterException
+
+@Throws(InvalidParameterException::class, NullPointerException::class)
+fun <T : ConstrainFragment> AppCompatDialogFragment.startFragment(fragmentCls: Class<T>, bundle: Bundle? = null, clearWhenEmptyStack: () -> Boolean, overrideTransaction: ((isHidden: Boolean, transaction: FragmentTransaction, curFragCls: Class<ConstrainFragment>) -> FragmentTransaction)? = null): ConstrainFragmentManager {
+    return startFrag(requireActivity(), "", this, javaClass, childFragmentManager, fragmentCls, bundle, clearWhenEmptyStack, overrideTransaction)
+}
 
 @Throws(InvalidParameterException::class, NullPointerException::class)
 fun <T : ConstrainFragment> FragmentActivity.startFragment(fragmentCls: Class<T>, bundle: Bundle? = null, clearWhenEmptyStack: () -> Boolean, overrideTransaction: ((isHidden: Boolean, transaction: FragmentTransaction, curFragCls: Class<ConstrainFragment>) -> FragmentTransaction)? = null): ConstrainFragmentManager {
