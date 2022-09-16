@@ -20,7 +20,7 @@ import java.security.InvalidParameterException
 
 @Throws(InvalidParameterException::class, NullPointerException::class)
 fun <T : ConstrainFragment> AppCompatDialogFragment.startFragment(fragmentCls: Class<T>, container: ViewGroup, bundle: Bundle? = null, clearWhenEmptyStack: () -> Boolean, overrideTransaction: ((isHidden: Boolean, transaction: FragmentTransaction, curFragCls: Class<ConstrainFragment>) -> FragmentTransaction)? = null): ConstrainFragmentManager {
-    return startFrag(requireActivity(), "", container, javaClass, childFragmentManager, fragmentCls, bundle, clearWhenEmptyStack, overrideTransaction)
+    return startFrag(requireActivity(), "", container, childFragmentManager,fragmentCls, bundle, clearWhenEmptyStack, overrideTransaction)
 }
 
 @Throws(InvalidParameterException::class, NullPointerException::class)
