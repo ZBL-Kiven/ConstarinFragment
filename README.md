@@ -21,9 +21,9 @@
  
 ## Introduction：
 
-###### ConstrainFragment 是为 Android 应用设计的 Fragment 多层级管理器集群框架 ，使用 [java]() 和 [Kotlin]() 语言混合开发，它完全基于原生 API 实现，兼容 ‘内嵌’ 、‘压栈’、‘模式定义’、‘生命周期管理’ 等完备功能。底层基于 hash 链表实现，性能卓越，稳定灵活。不依赖任何第三方库，是目前 Fragment 批处理唯一一个落地框架。
+###### ConstrainFragment 是为 Android 应用设计的 Fragment 多层级管理器集群框架 ，使用 [java]() 和 [Kotlin]() 语言混合开发，它完全基于原生 API 实现，兼容 ‘内嵌’ 、‘压栈’、‘模式定义’、‘生命周期管理’ 等完备功能。底层基于 hash 链表实现，性能卓越，稳定灵活。不依赖任何第三方库，Fragment 处理体验优于 Google Navigator。
 
-> ConstrainFragment 已为 AndroidX 提供，请升级至 V1.0.1 版本。
+> ConstrainFragment 已为 AndroidX 提供，请升级至 V1.0.1+ 版本。
 
 ## Features：
 
